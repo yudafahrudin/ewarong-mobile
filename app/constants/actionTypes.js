@@ -1,0 +1,13 @@
+export const LOGIN = 'session/LOGIN';
+export const USER = 'session/USER';
+export const RESET_STATE = 'RESET_STATE';
+export const BOOKING = 'BOOKING';
+export const ANTRIAN = 'ANTRIAN';
+export const LAYANAN = 'LAYANAN';
+export const HASIL_LAB = 'HASIL_LAB';
+export const HASIL_LAB_DETAIL = 'HASIL_LAB_DETAIL';
+export const PACKAGE = 'PACKAGE';
+export const PROMO = 'PROMO';
+export const PROFILE = 'PROFILE';
+export const SUCCES = 'SUCCES';
+export const EWARONG = 'EWARONG';

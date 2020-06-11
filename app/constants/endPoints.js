@@ -1,0 +1,17 @@
+export default {
+  BASE_URL: 'http:192.168.18.6/finalproject_laravel/public',
+  // BASE_URL: 'https://pramita.ucapanmu.com/index.php',
+  login: '/api/login',
+  register: '/api/auth/register',
+  getBooking: '/api/booking',
+  postBooking: '/api/booking',
+  getLayanan: '/api/layanan',
+  getHistoryAntrian: '/api/antrian',
+  getHistoryPasienLab: '/api/reg_pasien',
+  getHistoryDetailPasienLab: '/api/reg_test/',
+  bookingVoid: '/api/booking/void',
+  promo: '/api/promo',
+  package: '/api/paket',
+  profile: '/api/profile',
+  ewarong: '/api/ewarong',
+};
