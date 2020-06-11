@@ -14,4 +14,6 @@ export default {
   package: '/api/paket',
   profile: '/api/profile',
   ewarong: '/api/ewarong',
+  alldistricts: '/api/allvillagesanddistrics',
+  allitems: '/api/allitems',
 };

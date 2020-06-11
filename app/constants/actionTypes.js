@@ -11,3 +11,6 @@ export const PROMO = 'PROMO';
 export const PROFILE = 'PROFILE';
 export const SUCCES = 'SUCCES';
 export const EWARONG = 'EWARONG';
+export const EWARONG_DISTRICTS_VILLAGES = 'EWARONG_DISTRICTS_VILLAGES';
+export const EWARONG_ITEMS = 'EWARONG_ITEMS';
+export const EWARONG_PARAMS = 'EWARONG_PARAMS';

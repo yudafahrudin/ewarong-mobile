@@ -1,6 +1,7 @@
 import {createStackNavigator} from 'react-navigation-stack';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
+import FilterScreen from '../screens/FilterScreen';
 // import EditAccountScreen from '../screens/EditAccountScreen';
 // import AccountScreen from '../screens/AccountScreen';
 // import IdCardScreen from '../screens/IdCardScreen';
@@ -24,6 +25,7 @@ export default createStackNavigator(
   {
     HomeScreen,
     SearchScreen,
+    FilterScreen,
     // EditAccountScreen,
     // AccountScreen,
     // IdCardScreen,

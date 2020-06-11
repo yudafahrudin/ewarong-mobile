@@ -81,7 +81,7 @@ class HomeContainer extends Component {
   render() {
     const {ewarong} = this.props;
     const {initialPosition, modalVisible, ewarong_data} = this.state;
-    console.log(initialPosition);
+    console.log('ewarong', ewarong);
     let nama_kios = null;
     let lokasi = null;
     let jam_buka = null;
@@ -102,6 +102,9 @@ class HomeContainer extends Component {
           <View style={{width: Dimension.DEVICE_WIDTH / 2 - 2}}>
             <Button
               title="Cari Kios"
+              onPress={() =>
+                this.props.navigate('SearchScreen', initialPosition)
+              }
               icon={
                 <Icon
                   name="search"
@@ -122,6 +125,7 @@ class HomeContainer extends Component {
           <View style={{width: Dimension.DEVICE_WIDTH / 2 - 2}}>
             <Button
               title="Filter Kios"
+              onPress={() => this.props.navigate('FilterScreen')}
               icon={
                 <Icon
                   name="filter"
@@ -255,14 +259,18 @@ class HomeContainer extends Component {
                 }}>
                 <Icon
                   name="user-circle"
-                  size={25}
-                  style={{marginRight: 5}}
+                  size={30}
+                  style={{
+                    marginRight: 5,
+                    backgroundColor: Colors.WHITE,
+                    borderRadius: 20,
+                  }}
                   color="#3080ff"
                 />
               </Marker>
             ) : null}
 
-            {ewarong
+            {ewarong.length
               ? ewarong.map((val, key) => {
                   return (
                     <Marker

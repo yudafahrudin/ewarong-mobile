@@ -1,99 +1,100 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Image, ImageBackground, Text} from 'react-native';
-import {Icon} from 'react-native-elements';
+import {View, ScrollView, Text} from 'react-native';
+import {Picker} from '@react-native-community/picker';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {Button, Icon} from 'react-native-elements';
 import _ from 'lodash';
+import {getAllDistricts} from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
 
-const idCard = require('../../../assets//app-35.png');
-const bg1 = require('../../../assets/background-1.png');
-
 class SearchContainer extends Component {
-  state = {};
+  state = {
+    district_id: null,
+    village_id: null,
+  };
+
+  async componentDidMount() {
+    const {actions} = this.props;
+    await actions.getAllDistricts();
+  }
+
+  setSelectedValueDistricts(value) {
+    this.setState({
+      district_id: value,
+    });
+  }
+
+  setSelectedValueVillages(value) {
+    this.setState({
+      village_id: value,
+    });
+  }
 
   render() {
-    // const {data, barcode} = this.props.user;
-    const UserName = 'sadsa';
-    const PatientId = 'dasda';
-    const titleName = 'asdas';
+    const {district_id, village_id} = this.state;
+    const {districts, villages} = this.props.alldistricts;
+    const district_conv = Object.values(districts);
+    const villages_conv = Object.values(villages);
     return (
       <ScrollView style={{backgroundColor: '#ececec'}}>
-        <View style={{flex: 1}}>
-          <ImageBackground
-            source={bg1}
-            style={{
-              height: 200,
-              alignItems: 'center',
-              backgroundColor: 'white',
-              padding: 15,
-            }}>
-            <Icon
-              name="arrow-back"
-              containerStyle={{
-                padding: 5,
-                position: 'absolute',
-                top: 5,
-                left: 0,
-              }}
-              iconStyle={{marginLeft: 5}}
-              size={30}
-              onPress={() => this.props.navigate('HomeScreen')}
-            />
-            <View
-              style={{
-                width: 70,
-                height: 70,
-                marginTop: 30,
-                backgroundColor: '#024a74',
-                borderRadius: 50,
-              }}
-            />
-            <Text
-              style={{
-                fontSize: 16,
-                marginTop: 10,
-              }}>{`${UserName}, ${titleName}`}</Text>
-          </ImageBackground>
-          <View style={{alignItems: 'center'}}>
-            <ImageBackground
-              source={idCard}
-              style={{
-                width: Dimension.DEVICE_WIDTH - 20,
-                height: 220,
-                marginVertical: 10,
-              }}>
-              <Text style={{padding: 10, marginLeft: 10, paddingBottom: 0}}>
-                KARTU ID MEMBER
-              </Text>
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{fontSize: 30}}>{` ${PatientId}`}</Text>
-              </View>
-            </ImageBackground>
-            {/* <Image
-              source={{uri: barcode}}
-              style={{width: 250, height: 80, marginTop: 30}}
-              resizeMode="stretch"
-            /> */}
-            {/* <Text
-              style={{ color: 'black', fontSize: 20 }}
-            >{`00000000000${Id}`}</Text> */}
-          </View>
+        <View style={{flex: 1, justifyContent: 'space-between'}}>
+          {district_conv ? (
+            <Picker
+              selectedValue={district_id}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setSelectedValueDistricts(itemValue)
+              }>
+              {district_conv.map((val, key) => {
+                return (
+                  <Picker.Item key={key} label={val.name} value={val.id} />
+                );
+              })}
+            </Picker>
+          ) : null}
+          {villages_conv ? (
+            <Picker
+              selectedValue={village_id}
+              onValueChange={(itemValue, itemIndex) =>
+                this.setSelectedValueVillages(itemValue)
+              }>
+              {villages_conv.map((val, key) => {
+                return (
+                  <Picker.Item key={key} label={val.name} value={val.id} />
+                );
+              })}
+            </Picker>
+          ) : null}
+          <Button
+            title={'GUNAKAN LOKASI SAYA'}
+            buttonStyle={{
+              width: Dimension.DEVICE_WIDTH - 20,
+              margin: 10,
+            }}
+          />
+          <Button
+            title={'CARI BERDASARKAN DAERAH SAJA'}
+            buttonStyle={{
+              width: Dimension.DEVICE_WIDTH - 20,
+              margin: 10,
+              marginTop: 0,
+            }}
+          />
         </View>
       </ScrollView>
     );
   }
 }
 const mapStateToProps = (state) => ({
-  user: state.session.user,
+  alldistricts: state.ewarong.alldistricts,
 });
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({}, dispatch),
+  actions: bindActionCreators(
+    {
+      getAllDistricts,
+    },
+    dispatch,
+  ),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchContainer);

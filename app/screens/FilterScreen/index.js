@@ -1,10 +1,10 @@
 /* eslint-disable arrow-parens */
 import React, {Component} from 'react';
-import SearchContainer from './containers/SearchContainer';
+import FilterContainer from './containers/FilterContainer';
 
-class SearchScreen extends Component {
+class FilterScreen extends Component {
   static navigationOptions = ({navigation}) => ({
-    title: 'Cari Kios Ewarong',
+    title: 'Filter Ewarong',
     headerStyle: {
       backgroundColor: '#FD6A00',
     },
@@ -17,7 +17,7 @@ class SearchScreen extends Component {
 
   render() {
     return (
-      <SearchContainer
+      <FilterContainer
         navigation={this.props.navigation}
         navigate={this.navigateTo}
       />
@@ -25,4 +25,4 @@ class SearchScreen extends Component {
   }
 }
 
-export default SearchScreen;
+export default FilterScreen;
