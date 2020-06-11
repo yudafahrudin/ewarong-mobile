@@ -10,13 +10,26 @@ import {
 export const getEwarong = () => (dispatch, getState) => {
   const params = {};
   const {filters} = getState().ewarong;
-
+  console.log('filters on get', filters);
   if (filters) {
     if (filters.timefilter) {
       params['time'] = filters.timefilter;
     }
     if (filters.itemfilter.length) {
       params['items'] = filters.itemfilter;
+    }
+    if (filters.usemylocation) {
+      params['usemylocation'] = filters.usemylocation;
+      params['latitude'] = filters.latitude;
+      params['longitude'] = filters.longitude;
+      params['km'] = filters.rangekm;
+    } else {
+      if (filters.villagefilter) {
+        params['village_id'] = filters.villagefilter;
+      }
+      if (filters.districtfilter) {
+        params['district_id'] = filters.districtfilter;
+      }
     }
   }
   console.log('APSAPDPASDP', params);

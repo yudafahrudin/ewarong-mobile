@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {View, Text, Alert, ScrollView, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Button} from 'react-native-elements';
+import {Button, Slider} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import _ from 'lodash';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Modal from 'react-native-modal';
-import {getEwarong} from '../../../actions/ewarong';
+import {getEwarong, setParams} from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
 
@@ -16,7 +16,8 @@ class HomeContainer extends Component {
   state = {
     modalVisible: false,
     initialPosition: null,
-    ewarong_data: null,
+    ewarongData: null,
+    rangekm: 1,
   };
 
   async componentDidMount() {
@@ -78,9 +79,33 @@ class HomeContainer extends Component {
     return JSON.parse(val);
   }
 
+  async setRadius() {
+    const {actions, filters} = this.props;
+    const {rangekm, initialPosition} = this.state;
+    if (initialPosition) {
+      actions.setParams({
+        ...filters,
+        latitude: initialPosition.coords.latitude,
+        longitude: initialPosition.coords.longitude,
+        showRadius: false,
+        rangekm: rangekm,
+      });
+      await actions.getEwarong();
+    } else {
+      Alert.alert('Error Lokasi', 'Tolong hidupkan lokasi anda');
+    }
+  }
+  removeRadius() {
+    const {actions, filters} = this.props;
+    actions.setParams({
+      ...filters,
+      showRadius: false,
+    });
+  }
+
   render() {
-    const {ewarong} = this.props;
-    const {initialPosition, modalVisible, ewarong_data} = this.state;
+    const {ewarong, filters} = this.props;
+    const {initialPosition, modalVisible, ewarongData, rangekm} = this.state;
     console.log('ewarong', ewarong);
     let nama_kios = null;
     let lokasi = null;
@@ -88,13 +113,13 @@ class HomeContainer extends Component {
     let telp = null;
     let pemesanan = [];
     let stock = [];
-    if (ewarong_data) {
-      nama_kios = ewarong_data.nama_kios;
-      lokasi = ewarong_data.lokasi;
-      jam_buka = ewarong_data.jam_buka;
-      telp = ewarong_data.telp;
-      pemesanan = ewarong_data.pemesanan;
-      stock = ewarong_data.stock;
+    if (ewarongData) {
+      nama_kios = ewarongData.nama_kios;
+      lokasi = ewarongData.lokasi;
+      jam_buka = ewarongData.jam_buka;
+      telp = ewarongData.telp;
+      pemesanan = ewarongData.pemesanan;
+      stock = ewarongData.stock;
     }
     return (
       <ScrollView contentInsetAdjustmentBehavior="automatic">
@@ -247,8 +272,8 @@ class HomeContainer extends Component {
               longitude: initialPosition
                 ? initialPosition.coords.longitude
                 : 112.449825,
-              latitudeDelta: 0.002922,
-              longitudeDelta: 0.002421,
+              latitudeDelta: 0.002922 * (rangekm + 2.8),
+              longitudeDelta: 0.002421 * (rangekm + 2.8),
             }}>
             {initialPosition ? (
               <Marker
@@ -278,7 +303,7 @@ class HomeContainer extends Component {
                       onPress={() => {
                         this.setState({
                           modalVisible: true,
-                          ewarong_data: val,
+                          ewarongData: val,
                         });
                       }}
                       coordinate={{
@@ -310,6 +335,47 @@ class HomeContainer extends Component {
               color={Colors.WHITE}
             />
           </TouchableOpacity>
+          {filters.showRadius ? (
+            <TouchableOpacity
+              onPress={() => this.getGeoLocation()}
+              style={{
+                position: 'absolute', //use absolute position to show button on top of the map
+                bottom: '18%', //for center align
+                alignSelf: 'center', //for align to right
+                borderWidth: 2,
+                borderColor: 'white',
+                width: Dimension.DEVICE_WIDTH - 20,
+                backgroundColor: Colors.WHITE,
+                padding: 10,
+              }}>
+              <Slider
+                minimumValue={1}
+                maximumValue={5}
+                value={rangekm}
+                onValueChange={(value) => {
+                  this.setState({rangekm: Math.round(value)});
+                }}
+              />
+              <Text style={{alignSelf: 'center', fontSize: 17}}>
+                Jarak Jangkauan {rangekm} km
+              </Text>
+              <Button
+                title={'CARI'}
+                onPress={() => this.setRadius()}
+                buttonStyle={{
+                  margin: 10,
+                }}
+              />
+              <Button
+                title={'BATAL'}
+                onPress={() => this.removeRadius()}
+                buttonStyle={{
+                  margin: 10,
+                  marginTop: 0,
+                }}
+              />
+            </TouchableOpacity>
+          ) : null}
         </View>
       </ScrollView>
     );
@@ -318,11 +384,13 @@ class HomeContainer extends Component {
 
 const mapStateToProps = (state) => ({
   ewarong: state.ewarong.ewarong,
+  filters: state.ewarong.filters,
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       getEwarong,
+      setParams,
     },
     dispatch,
   ),

@@ -70,24 +70,26 @@ class FilterContainer extends Component {
     });
   }
 
-  setParameters() {
+  async setParameters() {
     const {checked, timeShow} = this.state;
-    const {actions, navigate} = this.props;
+    const {actions, navigate, filters} = this.props;
     actions.setParams({
+      ...filters,
       timefilter: timeShow ? moment(timeShow).format('HH:mm') : null,
       itemfilter: checked,
     });
-    actions.getEwarong();
+    await actions.getEwarong();
     navigate('HomeScreen');
   }
 
-  removeFIlter() {
-    const {actions, navigate} = this.props;
+  async removeFIlter() {
+    const {actions, navigate, filters} = this.props;
     actions.setParams({
+      ...filters,
       timefilter: null,
       itemfilter: [],
     });
-    actions.getEwarong();
+    await actions.getEwarong();
     navigate('HomeScreen');
   }
 
@@ -169,6 +171,7 @@ class FilterContainer extends Component {
 }
 const mapStateToProps = (state) => ({
   allItems: state.ewarong.allItems,
+  filters: state.ewarong.filters,
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(

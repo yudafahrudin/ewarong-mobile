@@ -12,8 +12,13 @@ const initialState = {
   filters: {
     timefilter: null,
     itemfilter: [],
+    latitude: null,
+    longitude: null,
     villagefilter: null,
     districtfilter: null,
+    rangekm: 1,
+    showRadius: false,
+    usemylocation: false,
   },
 };
 
@@ -43,6 +48,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         filters: {
+          ...initialState.filters,
           ...payload,
         },
       };

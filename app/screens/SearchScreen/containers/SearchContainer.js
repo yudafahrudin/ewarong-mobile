@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Text} from 'react-native';
+import {View, ScrollView, Text, Alert} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Button, Icon} from 'react-native-elements';
 import _ from 'lodash';
-import {getAllDistricts} from '../../../actions/ewarong';
+import {getAllDistricts, setParams, getEwarong} from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
 
 class SearchContainer extends Component {
@@ -31,6 +31,33 @@ class SearchContainer extends Component {
     });
   }
 
+  setParameters() {
+    const {actions, navigate, filters} = this.props;
+    actions.setParams({
+      ...filters,
+      showRadius: true,
+      usemylocation: true,
+    });
+    navigate('HomeScreen');
+  }
+
+  async searchByDistrict() {
+    const {village_id, district_id} = this.state;
+    const {actions, navigate, filters} = this.props;
+    if (village_id == null && district_id == null) {
+      Alert.alert('Pilih Lokasi', 'Pilih salah satu kecamatan atau dusun');
+    } else {
+      actions.setParams({
+        ...filters,
+        usemylocation: false,
+        villagefilter: village_id,
+        districtfilter: district_id,
+      });
+      await actions.getEwarong();
+      navigate('HomeScreen');
+    }
+  }
+
   render() {
     const {district_id, village_id} = this.state;
     const {districts, villages} = this.props.alldistricts;
@@ -45,6 +72,7 @@ class SearchContainer extends Component {
               onValueChange={(itemValue, itemIndex) =>
                 this.setSelectedValueDistricts(itemValue)
               }>
+              <Picker.Item key={-1} label={'Pilih Kecamatan'} value={0} />
               {district_conv.map((val, key) => {
                 return (
                   <Picker.Item key={key} label={val.name} value={val.id} />
@@ -58,6 +86,7 @@ class SearchContainer extends Component {
               onValueChange={(itemValue, itemIndex) =>
                 this.setSelectedValueVillages(itemValue)
               }>
+              <Picker.Item key={-1} label={'Pilih Dusun'} value={0} />
               {villages_conv.map((val, key) => {
                 return (
                   <Picker.Item key={key} label={val.name} value={val.id} />
@@ -67,6 +96,7 @@ class SearchContainer extends Component {
           ) : null}
           <Button
             title={'GUNAKAN LOKASI SAYA'}
+            onPress={() => this.setParameters()}
             buttonStyle={{
               width: Dimension.DEVICE_WIDTH - 20,
               margin: 10,
@@ -74,6 +104,7 @@ class SearchContainer extends Component {
           />
           <Button
             title={'CARI BERDASARKAN DAERAH SAJA'}
+            onPress={() => this.searchByDistrict()}
             buttonStyle={{
               width: Dimension.DEVICE_WIDTH - 20,
               margin: 10,
@@ -87,11 +118,14 @@ class SearchContainer extends Component {
 }
 const mapStateToProps = (state) => ({
   alldistricts: state.ewarong.alldistricts,
+  filters: state.ewarong.filters,
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       getAllDistricts,
+      setParams,
+      getEwarong,
     },
     dispatch,
   ),
