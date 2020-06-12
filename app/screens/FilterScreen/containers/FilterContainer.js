@@ -19,20 +19,18 @@ class FilterContainer extends Component {
   };
 
   async componentDidMount() {
-    const {actions} = this.props;
+    const {actions, filters} = this.props;
+    if (filters.itemfilter.length > 0) {
+      this.setState({
+        checked: filters.itemfilter,
+      });
+    }
+    if (filters.timefilter) {
+      this.setState({
+        timeShow: filters.timefilter,
+      });
+    }
     await actions.getAllItems();
-  }
-
-  setSelectedValueDistricts(value) {
-    this.setState({
-      district_id: value,
-    });
-  }
-
-  setSelectedValueVillages(value) {
-    this.setState({
-      village_id: value,
-    });
   }
 
   setItem(id) {
@@ -61,7 +59,7 @@ class FilterContainer extends Component {
     const {showDate} = this.state;
     if (value.type == 'set') {
       this.setState({
-        timeShow: value.nativeEvent.timestamp,
+        timeShow: moment(value.nativeEvent.timestamp).format('HH:mm'),
         showDate: !showDate,
       });
     }
@@ -75,7 +73,7 @@ class FilterContainer extends Component {
     const {actions, navigate, filters} = this.props;
     actions.setParams({
       ...filters,
-      timefilter: timeShow ? moment(timeShow).format('HH:mm') : null,
+      timefilter: timeShow ? timeShow : null,
       itemfilter: checked,
     });
     await actions.getEwarong();
@@ -96,6 +94,7 @@ class FilterContainer extends Component {
   render() {
     const {allItems} = this.props;
     const {checked, timeShow, showDate} = this.state;
+    console.log(this.state);
     return (
       <ScrollView style={{backgroundColor: '#ececec'}}>
         <View
@@ -108,7 +107,7 @@ class FilterContainer extends Component {
                 marginRight: 20,
                 color: Colors.DARK_GREY,
               }}>
-              {timeShow ? moment(timeShow).format('HH:mm') : 'Pilih Jam Buka'}
+              {timeShow ? timeShow : 'Pilih Jam Buka'}
             </Text>
             <Button
               buttonStyle={{

@@ -32,7 +32,7 @@ const transformFormData = (data) => {
 
 const api = (getState, dispatch, endPoint, method = 'get', params, headers) => {
   const {token} = getState().session;
-  console.log({
+  const optionData = {
     method,
     url: `${EndPoints.BASE_URL}${endPoint}`,
     headers: {
@@ -50,33 +50,16 @@ const api = (getState, dispatch, endPoint, method = 'get', params, headers) => {
         return JSON.stringify(params);
       },
     ],
-  });
-  return axios({
-    method,
-    url: `${EndPoints.BASE_URL}${endPoint}`,
-    headers: {
-      Authorization: token ? token : '',
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-    params: method === 'get' ? params : {},
-    data: method === 'post' || method === 'put' ? params : undefined,
-    transformRequest: [
-      (requestData, requestHeaders) => {
-        if (requestHeaders['Content-Type'] === 'multipart/form-data') {
-          return transformFormData(requestData);
-        }
-        return JSON.stringify(params);
-      },
-    ],
-  })
+  };
+  console.log(optionData);
+  return axios(optionData)
     .then((response) => {
       console.log(response);
       return response;
     })
     .catch((error) => {
       const {response} = error;
-      Alert.alert('Error', JSON.stringify(response));
+      Alert.alert('Error', JSON.stringify(response.data.message));
       throw new Error(error);
     });
 };

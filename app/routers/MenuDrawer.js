@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import _ from 'lodash';
-
 import {
   View,
   Text,
@@ -13,8 +12,6 @@ import {
 } from 'react-native';
 import {logout} from '../actions/session';
 
-const Logo = require('../assets/app_logo_3.png');
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -22,7 +19,6 @@ const styles = StyleSheet.create({
   },
 
   profile: {
-    flex: 1,
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'lightgray',
@@ -49,7 +45,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   topLinks: {
-    height: 140,
+    height: 70,
   },
   bottomLinks: {
     flex: 1,
@@ -96,15 +92,15 @@ class MenuDrawer extends Component {
     );
   }
 
-  navigateLogout = () => {
+  navigateScreen = (screen) => {
     const {navigation} = this.props;
-    navigation.navigate('AuthLoading');
+    console.log(this.props);
+    navigation.navigate(screen);
   };
 
   render() {
-    // const { data } = this.props.user;
-    const UserName = 'Yuda';
-    const titleName = 'Mr.';
+    const {user} = this.props.session;
+    const UserName = user ? 'Sudah login' : 'Selamat datang';
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -121,21 +117,30 @@ class MenuDrawer extends Component {
                   }}
                 />
                 <View style={styles.profileText}>
-                  <Text style={styles.name}>{`${UserName}, ${titleName}`}</Text>
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('EditAccountScreen')
-                    }
-                    style={styles.editProfile}>
-                    Edit Profile
-                  </Text>
+                  <Text style={styles.name}>{`${UserName}`}</Text>
+                  {user ? (
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('EditAccountScreen')
+                      }
+                      style={styles.editProfile}>
+                      Edit Profile
+                    </Text>
+                  ) : (
+                    <Text
+                      onPress={() =>
+                        this.props.navigation.navigate('EditAccountScreen')
+                      }
+                      style={styles.editProfile}>
+                      Daftar sekarang
+                    </Text>
+                  )}
                 </View>
               </View>
             </View>
           </View>
           <View style={styles.bottomLinks}>
-            {/* {this.navLink('HomeScreen', 'Beranda')} */}
-            {this.navLink('IdCardScreen', 'Kartu ID')}
+            {this.navLink('HomeScreen', 'Home')}
           </View>
           <View
             style={[
@@ -143,16 +148,14 @@ class MenuDrawer extends Component {
               {borderTopColor: 'lightgray', borderTopWidth: 1},
             ]}>
             {this.navLink('HelpScreen', 'Bantuan')}
-            {/* {this.navLink('', 'Edit Akun')} */}
           </View>
         </ScrollView>
         <View style={styles.footer}>
           <TouchableOpacity
             onPress={() => {
-              this.props.actions.logout();
-              this.navigateLogout();
+              this.navigateScreen('Login');
             }}>
-            <Text style={styles.logout}>Logout</Text>
+            <Text style={styles.logout}>Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -161,7 +164,7 @@ class MenuDrawer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.session.user,
+  session: state.session,
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(

@@ -7,6 +7,7 @@ import {Button, Icon} from 'react-native-elements';
 import _ from 'lodash';
 import {getAllDistricts, setParams, getEwarong} from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
+import Colors from '../../../constants/colors';
 
 class SearchContainer extends Component {
   state = {
@@ -38,6 +39,19 @@ class SearchContainer extends Component {
       showRadius: true,
       usemylocation: true,
     });
+    navigate('HomeScreen');
+  }
+
+  async removeParameters() {
+    const {actions, navigate, filters} = this.props;
+    actions.setParams({
+      ...filters,
+      showRadius: false,
+      usemylocation: false,
+      villagefilter: null,
+      districtfilter: null,
+    });
+    await actions.getEwarong();
     navigate('HomeScreen');
   }
 
@@ -94,21 +108,32 @@ class SearchContainer extends Component {
               })}
             </Picker>
           ) : null}
+
           <Button
-            title={'GUNAKAN LOKASI SAYA'}
-            onPress={() => this.setParameters()}
+            title={'CARI BERDASARKAN DAERAH'}
+            onPress={() => this.searchByDistrict()}
             buttonStyle={{
               width: Dimension.DEVICE_WIDTH - 20,
               margin: 10,
             }}
           />
           <Button
-            title={'CARI BERDASARKAN DAERAH SAJA'}
-            onPress={() => this.searchByDistrict()}
+            title={'GUNAKAN LOKASI SAYA'}
+            onPress={() => this.setParameters()}
+            buttonStyle={{
+              width: Dimension.DEVICE_WIDTH - 20,
+              marginTop: 0,
+              margin: 10,
+            }}
+          />
+          <Button
+            title={'HAPUS PENCARIAN'}
+            onPress={() => this.removeParameters()}
             buttonStyle={{
               width: Dimension.DEVICE_WIDTH - 20,
               margin: 10,
               marginTop: 0,
+              backgroundColor: Colors.RED,
             }}
           />
         </View>
