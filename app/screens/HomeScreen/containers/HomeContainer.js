@@ -274,8 +274,8 @@ class HomeContainer extends Component {
               flex: 1,
             }}
             initialRegion={{
-              latitude: -7.468489,
-              longitude: 112.449825,
+              latitude: -7.417545,
+              longitude: 112.492593,
               latitudeDelta: 0.002922,
               longitudeDelta: 0.002421,
             }}
