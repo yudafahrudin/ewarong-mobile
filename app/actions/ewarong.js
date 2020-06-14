@@ -5,12 +5,14 @@ import {
   EWARONG_DISTRICTS_VILLAGES,
   EWARONG_ITEMS,
   EWARONG_PARAMS,
+  EWARONG_MYORDERS,
 } from '../constants/actionTypes';
+import {Alert} from 'react-native';
 
 export const getEwarong = () => (dispatch, getState) => {
   const params = {};
   const {filters} = getState().ewarong;
-  console.log('filters on get', filters);
+
   if (filters) {
     if (filters.timefilter) {
       params['time'] = filters.timefilter;
@@ -32,7 +34,7 @@ export const getEwarong = () => (dispatch, getState) => {
       }
     }
   }
-  console.log('APSAPDPASDP', params);
+
   return api(getState, dispatch, EndPoints.ewarong, 'get', params).then(
     (response) => {
       const {data} = response;
@@ -64,4 +66,31 @@ export const getAllItems = () => (dispatch, getState) => {
 
 export const setParams = (params) => (dispatch, getState) => {
   return dispatch({type: EWARONG_PARAMS, payload: params});
+};
+
+export const orders = (params, navigateSucces) => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.orders, 'post', params).then(
+    (response) => {
+      const {data} = response;
+      console.log('response inside orders', response);
+      const {message, status} = data;
+      if (status == 'success') {
+        Alert.alert('Berhasil', 'Berhasil menambahkan pesanan anda', [
+          {text: 'OK', onPress: () => navigateSucces()},
+        ]);
+      } else {
+        Alert.alert('Error', message);
+      }
+    },
+  );
+};
+
+export const getMyOrders = () => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.myorders).then((response) => {
+    const {data} = response;
+    dispatch({
+      type: EWARONG_MYORDERS,
+      payload: data.data,
+    });
+  });
 };

@@ -31,15 +31,27 @@ const transformFormData = (data) => {
 };
 
 const api = (getState, dispatch, endPoint, method = 'get', params, headers) => {
-  const {token} = getState().session;
+  let headersData = {
+    'Content-Type': 'application/json',
+    ...headers,
+  };
+
+  if (getState) {
+    const {token} = getState().session;
+    headersData = {
+      Authorization: token ? `Bearer ${token}` : '',
+      ...headersData,
+    };
+  }
+
   const optionData = {
     method,
     url: `${EndPoints.BASE_URL}${endPoint}`,
     headers: {
-      Authorization: token ? token : '',
       'Content-Type': 'application/json',
-      ...headers,
+      ...headersData,
     },
+
     params: method === 'get' ? params : {},
     data: method === 'post' || method === 'put' ? params : undefined,
     transformRequest: [
@@ -54,7 +66,7 @@ const api = (getState, dispatch, endPoint, method = 'get', params, headers) => {
   console.log(optionData);
   return axios(optionData)
     .then((response) => {
-      console.log(response);
+      console.log('inside api js', response);
       return response;
     })
     .catch((error) => {

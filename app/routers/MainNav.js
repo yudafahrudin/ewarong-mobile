@@ -13,7 +13,7 @@ export default createAppContainer(
       App: MainDrawerNav,
     },
     {
-      initialRouteName: 'Login',
+      initialRouteName: 'AuthLoading',
     },
   ),
 );

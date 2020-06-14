@@ -3,12 +3,14 @@ import {
   EWARONG_DISTRICTS_VILLAGES,
   EWARONG_ITEMS,
   EWARONG_PARAMS,
+  EWARONG_MYORDERS,
 } from '../constants/actionTypes';
 
 const initialState = {
   ewarong: null,
   alldistricts: [],
   allItems: [],
+  myorders: [],
   filters: {
     timefilter: null,
     itemfilter: [],
@@ -41,6 +43,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         allItems: payload,
+      };
+    }
+    case EWARONG_MYORDERS: {
+      return {
+        ...state,
+        myorders: payload,
       };
     }
     case EWARONG_PARAMS: {

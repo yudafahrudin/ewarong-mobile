@@ -103,8 +103,19 @@ class HomeContainer extends Component {
     });
   }
 
+  navigateOrder = () => {
+    const {ewarongData} = this.state;
+    const {navigate} = this.props;
+    this.setState({
+      modalVisible: false,
+    });
+    setTimeout(() => navigate('OrderScreen', {ewarong: ewarongData}), 200);
+  };
+
   render() {
     const {ewarong, filters} = this.props;
+    const {user} = this.props.session;
+    const isLogin = user ? true : false;
     const {initialPosition, modalVisible, ewarongData, rangekm} = this.state;
     console.log('ewarong', ewarong);
     let nama_kios = null;
@@ -179,7 +190,7 @@ class HomeContainer extends Component {
             <Modal isVisible={modalVisible}>
               <View
                 style={{
-                  height: Dimension.DEVICE_HEIGHT / 2,
+                  height: Dimension.DEVICE_HEIGHT / 2 + 150,
                   padding: 10,
                   backgroundColor: '#FFFFFF',
                 }}>
@@ -216,38 +227,41 @@ class HomeContainer extends Component {
                     })}
                   </View>
                 </ScrollView>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                  }}>
-                  <Button
-                    title="Pesan"
-                    titleStyle={{
-                      color: Colors.TEXT_BLACK,
-                    }}
-                    buttonStyle={{
-                      marginBottom: 1,
-                      backgroundColor: Colors.LIGHT_GREY,
-                      width: Dimension.DEVICE_WIDTH - 38,
-                    }}
-                  />
-                  <Button
-                    title="Batal"
-                    onPress={() => {
-                      this.setState({
-                        modalVisible: false,
-                      });
-                    }}
-                    titleStyle={{
-                      color: Colors.TEXT_BLACK,
-                    }}
-                    buttonStyle={{
-                      backgroundColor: Colors.LIGHT_GREY,
-                      width: Dimension.DEVICE_WIDTH - 38,
-                    }}
-                  />
-                </View>
+                {isLogin ? (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                    }}>
+                    <Button
+                      title="Pesan"
+                      onPress={() => this.navigateOrder()}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        marginBottom: 1,
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
+                    <Button
+                      title="Batal"
+                      onPress={() => {
+                        this.setState({
+                          modalVisible: false,
+                        });
+                      }}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
+                  </View>
+                ) : null}
               </View>
             </Modal>
           </View>
@@ -383,6 +397,7 @@ class HomeContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  session: state.session,
   ewarong: state.ewarong.ewarong,
   filters: state.ewarong.filters,
 });

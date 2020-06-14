@@ -1,29 +1,30 @@
-import React, { Component } from "react";
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-  StatusBar
-} from "react-native";
-import { Button } from "react-native-elements";
+import React, {Component} from 'react';
+import {View} from 'react-native';
+import {Button, Text} from 'react-native-elements';
 
 class AboutScreen extends Component {
-  // static navigationOptions = {
-  //   header: null
-  // };
-
-  // state = {};
+  static navigationOptions = ({navigation}) => ({
+    title: 'Tentang Aplikasi',
+    headerStyle: {
+      backgroundColor: '#FD6A00',
+    },
+    headerTintColor: '#fff',
+  });
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Button
-          title="ABOUT MENU"
-          onPress={() => this.props.navigation.toggleDrawer()}
-        />
+      <View style={{flex: 1}}>
+        <Text style={{padding: 20, fontSize: 17}}>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book. It has survived not only
+          five centuries, but also the leap into electronic typesetting,
+          remaining essentially unchanged. It was popularised in the 1960s with
+          the release of Letraset sheets containing Lorem Ipsum passages, and
+          more recently with desktop publishing software like Aldus PageMaker
+          including versions of Lorem Ipsum.
+        </Text>
       </View>
     );
   }

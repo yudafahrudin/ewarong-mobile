@@ -15,17 +15,18 @@ export const login = (username, password, navigateSucces) => (
     email: username,
     password,
   };
-  console.log('params', params);
+
   return api(getState, dispatch, EndPoints.login, 'post', params).then(
     (response) => {
       const {data} = response;
+      console.log(data);
       const {message} = data;
       if (message) {
       } else {
         dispatch({
           type: USER,
           payload: {
-            data: data.user,
+            user: data.user,
             token: data.access_token,
           },
         });
@@ -36,30 +37,48 @@ export const login = (username, password, navigateSucces) => (
 };
 
 export const register = (
-  {username, password, password_conf, hp_email},
+  {
+    name,
+    password,
+    email,
+    type,
+    address,
+    nama_kios,
+    telp,
+    latitude,
+    longitude,
+    jam_buka,
+  },
   navigateSucces,
 ) => (dispatch, getState) => {
   const params = {
-    username,
+    name,
     password,
-    password_conf,
-    hp_email,
+    email,
+    address,
+    type,
+    nama_kios,
+    telp,
+    latitude,
+    longitude,
+    jam_buka,
   };
-  return api(getState, dispatch, EndPoints.register, 'POST', params).then(
-    (response) => {
+  return api(getState, dispatch, EndPoints.register, 'post', params)
+    .then((response) => {
+      console.log('inside session js', response);
       const {data} = response;
       const {msg} = data;
       if (msg) {
         Alert.alert('Error', response.data.msg);
       } else {
-        dispatch({
-          type: USER,
-          payload: {data: response.data.data, barcode: response.data.barcode},
-        });
-        setTimeout(() => navigateSucces(), 0);
+        Alert.alert('Berhasil', 'Berhasil mendaftarkan akun anda', [
+          {text: 'OK', onPress: () => navigateSucces()},
+        ]);
       }
-    },
-  );
+    })
+    .catch((err) => {
+      Alert.alert('Error', JSON.stringify(err));
+    });
 };
 
 export const logout = () => ({

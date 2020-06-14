@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {logout} from '../actions/session';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const styles = StyleSheet.create({
   container: {
@@ -72,11 +73,8 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   logout: {
-    flex: 1,
-    padding: 10,
-    paddingLeft: 0,
-    marginLeft: 20,
     fontSize: 16,
+    marginHorizontal: 20,
     color: 'red',
   },
 });
@@ -94,13 +92,18 @@ class MenuDrawer extends Component {
 
   navigateScreen = (screen) => {
     const {navigation} = this.props;
-    console.log(this.props);
     navigation.navigate(screen);
   };
 
+  logoutSession() {
+    const {actions} = this.props;
+    actions.logout();
+    this.navigateScreen('AuthLoading');
+  }
+
   render() {
     const {user} = this.props.session;
-    const UserName = user ? 'Sudah login' : 'Selamat datang';
+    const UserName = user ? user.name : 'Selamat datang';
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -128,9 +131,7 @@ class MenuDrawer extends Component {
                     </Text>
                   ) : (
                     <Text
-                      onPress={() =>
-                        this.props.navigation.navigate('EditAccountScreen')
-                      }
+                      onPress={() => this.props.navigation.navigate('Login')}
                       style={styles.editProfile}>
                       Daftar sekarang
                     </Text>
@@ -140,23 +141,39 @@ class MenuDrawer extends Component {
             </View>
           </View>
           <View style={styles.bottomLinks}>
-            {this.navLink('HomeScreen', 'Home')}
+            {this.navLink('AboutScreen', 'Profil')}
           </View>
           <View
             style={[
               styles.bottomLinks,
               {borderTopColor: 'lightgray', borderTopWidth: 1},
             ]}>
-            {this.navLink('HelpScreen', 'Bantuan')}
+            {this.navLink('OrderListScreen', 'Pesananku')}
+          </View>
+          <View
+            style={[
+              styles.bottomLinks,
+              {borderTopColor: 'lightgray', borderTopWidth: 1},
+            ]}>
+            {this.navLink('AboutScreen', 'Tentang')}
           </View>
         </ScrollView>
         <View style={styles.footer}>
-          <TouchableOpacity
-            onPress={() => {
-              this.navigateScreen('Login');
-            }}>
-            <Text style={styles.logout}>Login</Text>
-          </TouchableOpacity>
+          {user ? (
+            <TouchableOpacity
+              onPress={() => {
+                this.logoutSession();
+              }}>
+              <Text style={styles.logout}>LOGOUT</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                this.navigateScreen('Login');
+              }}>
+              <Text style={styles.logout}>LOGIN</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );

@@ -1,16 +1,16 @@
-import { USER } from '../constants/actionTypes';
+import {USER} from '../constants/actionTypes';
 
 const initialState = {
   user: null,
 };
 
 const reducer = (state = initialState, action) => {
-  const { payload, type } = action;
+  const {payload, type} = action;
   switch (type) {
     case USER: {
       return {
         ...state,
-        user: payload,
+        user: payload.user,
         token: payload.token,
       };
     }

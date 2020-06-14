@@ -9,7 +9,7 @@ import {
   Alert,
   StatusBar,
   ImageBackground,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -86,13 +86,20 @@ class LoginScreen extends Component {
       disabled: true,
     });
     if (username && password) {
-      await actions.login(username, password, () => this.navigateApp());
+      await actions
+        .login(username, password, () => this.navigateApp())
+        .then()
+        .catch((err) => {
+          this.setState({
+            disabled: false,
+          });
+        });
     } else {
       Alert.alert('Error', 'Mohon untuk memasukan Username / Password');
+      this.setState({
+        disabled: false,
+      });
     }
-    this.setState({
-      disabled: false,
-    });
   };
 
   navigateApp() {
@@ -112,13 +119,18 @@ class LoginScreen extends Component {
           Dimension.DEVICE_HEIGHT / 10 - (Dimension.DEVICE_HEIGHT * 2) / 7
         }>
         <StatusBar backgroundColor={Colors.BLACK} />
-        <TouchableWithoutFeedback
+        <TouchableOpacity
+          style={{
+            padding: 10,
+            position: 'absolute',
+            margin: 20,
+            right: 0,
+          }}
           onPress={() => this.navigateApp('HomeScreen')}>
-          <Text
-            style={{fontSize: 15, position: 'absolute', margin: 20, right: 0}}>
+          <Text style={{fontSize: 15}}>
             Lihat tanpa login <Icon name="arrow-right" size={15} />
           </Text>
-        </TouchableWithoutFeedback>
+        </TouchableOpacity>
         <View
           style={{
             justifyContent: 'center',
@@ -171,7 +183,7 @@ class LoginScreen extends Component {
                 width: 100,
                 backgroundColor: Colors.YELLOWBLACK,
               }}
-              onPress={() => this.props.navigation.navigate('ScanBarcode')}
+              onPress={() => this.props.navigation.navigate('Register')}
             />
           </View>
         </View>
