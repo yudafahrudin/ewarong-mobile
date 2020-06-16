@@ -61,6 +61,11 @@ const reducer = (state = initialState, action) => {
         },
       };
     }
+    case 'RESET_STATE': {
+      return {
+        ...initialState,
+      };
+    }
     default: {
       return state;
     }

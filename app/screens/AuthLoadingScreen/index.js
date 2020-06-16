@@ -10,7 +10,7 @@ import {bindActionCreators} from 'redux';
 import Dimension from '../../constants/dimensions';
 
 // const Logo = require('../../assets/app_logo_4.png');
-const Bg = require('../../assets/app-32.png');
+const Bg = require('../../assets/app_logo_3.png');
 
 class AuthLoadingScreen extends Component {
   constructor(props) {

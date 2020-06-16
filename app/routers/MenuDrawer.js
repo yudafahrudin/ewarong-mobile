@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {logout} from '../actions/session';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import EndPoint from '../constants/endPoints';
 
 const styles = StyleSheet.create({
   container: {
@@ -104,6 +105,7 @@ class MenuDrawer extends Component {
   render() {
     const {user} = this.props.session;
     const UserName = user ? user.name : 'Selamat datang';
+
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -117,8 +119,17 @@ class MenuDrawer extends Component {
                     borderRadius: 50,
                     backgroundColor: '#024a74',
                     marginHorizontal: 10,
-                  }}
-                />
+                  }}>
+                  {user ? (
+                    <Image
+                      source={{
+                        uri: `${EndPoint.BASE_URL}${EndPoint.profileImageUrl}/${user.image_url}`,
+                      }}
+                      style={{width: 50, height: 50, borderRadius: 50}}
+                    />
+                  ) : null}
+                </View>
+
                 <View style={styles.profileText}>
                   <Text style={styles.name}>{`${UserName}`}</Text>
                   {user ? (
@@ -140,16 +151,23 @@ class MenuDrawer extends Component {
               </View>
             </View>
           </View>
-          <View style={styles.bottomLinks}>
-            {this.navLink('AboutScreen', 'Profil')}
-          </View>
-          <View
-            style={[
-              styles.bottomLinks,
-              {borderTopColor: 'lightgray', borderTopWidth: 1},
-            ]}>
-            {this.navLink('OrderListScreen', 'Pesananku')}
-          </View>
+          {user ? (
+            <View style={styles.bottomLinks}>
+              {this.navLink('ProfileScreen', 'Profil')}
+            </View>
+          ) : null}
+          {user ? (
+            user.access_type == 'umum' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink('OrderListScreen', 'Pesananku')}
+              </View>
+            ) : null
+          ) : null}
+
           <View
             style={[
               styles.bottomLinks,

@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, Alert, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Alert,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Button, Slider} from 'react-native-elements';
@@ -67,11 +74,11 @@ class HomeContainer extends Component {
   pinnedColor(val) {
     console.log('total pesan', val);
     if (val <= 10) {
-      return 'green';
+      return require('../../../assets/point_hijau.png');
     } else if (val <= 20 && val >= 11) {
-      return 'orange';
+      return require('../../../assets/point_orange.png');
     } else {
-      return 'red';
+      return require('../../../assets/point_merah.png');
     }
   }
 
@@ -282,10 +289,10 @@ class HomeContainer extends Component {
             region={{
               latitude: initialPosition
                 ? initialPosition.coords.latitude
-                : -7.468489,
+                : -7.417545,
               longitude: initialPosition
                 ? initialPosition.coords.longitude
-                : 112.449825,
+                : 112.492593,
               latitudeDelta: 0.002922 * (rangekm + 2.8),
               longitudeDelta: 0.002421 * (rangekm + 2.8),
             }}>
@@ -309,7 +316,7 @@ class HomeContainer extends Component {
               </Marker>
             ) : null}
 
-            {ewarong.length
+            {ewarong
               ? ewarong.map((val, key) => {
                   return (
                     <Marker
@@ -324,8 +331,13 @@ class HomeContainer extends Component {
                         latitude: Number(val.latitude),
                         longitude: Number(val.longitude),
                       }}
-                      pinColor={this.pinnedColor(val.pemesanan.length)}
-                    />
+                      // pinColor={this.pinnedColor(val.pemesanan.length)}
+                    >
+                      <Image
+                        source={this.pinnedColor(val.pemesanan.length)}
+                        style={{height: 60, width: 60}}
+                      />
+                    </Marker>
                   );
                 })
               : null}
@@ -364,7 +376,7 @@ class HomeContainer extends Component {
               }}>
               <Slider
                 minimumValue={1}
-                maximumValue={5}
+                maximumValue={10}
                 value={rangekm}
                 onValueChange={(value) => {
                   this.setState({rangekm: Math.round(value)});

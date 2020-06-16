@@ -5,6 +5,8 @@ import FilterScreen from '../screens/FilterScreen';
 import AboutScreen from '../screens/AboutScreen';
 import OrderScreen from '../screens/OrderScreen';
 import OrderListScreen from '../screens/OrderListScreen';
+import OrderDetailScreen from '../screens/OrderDetailScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import Colors from '../constants/colors';
 
 export default createStackNavigator(
@@ -15,6 +17,8 @@ export default createStackNavigator(
     AboutScreen,
     OrderScreen,
     OrderListScreen,
+    OrderDetailScreen,
+    ProfileScreen,
   },
   {
     initialRouteName: 'HomeScreen',

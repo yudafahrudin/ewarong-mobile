@@ -1,6 +1,12 @@
 /* eslint-disable import/named */
 import React, {Component} from 'react';
-import {View, FlatList, Alert, ActivityIndicator} from 'react-native';
+import {
+  View,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ListItem, Text, Input, Button} from 'react-native-elements';
@@ -10,7 +16,7 @@ import Modal from 'react-native-modal';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
 
-class OrderContainer extends Component {
+class OrderDetailContainer extends Component {
   state = {
     orders: [],
     modalVisible: false,
@@ -134,16 +140,16 @@ class OrderContainer extends Component {
   };
 
   render() {
-    const {navigate} = this.props;
+    const {navigate, detailOrder} = this.props;
     const {ewarong, orders, disabled, modalVisible} = this.state;
-    console.log(ewarong);
+
     return (
-      <View
+      <ScrollView
         style={{
           flex: 1,
           width: Dimension.DEVICE_WIDTH,
         }}>
-        <Modal isVisible={modalVisible} style={{justifyContent: 'center'}}>
+        {/* <Modal isVisible={modalVisible} style={{justifyContent: 'center'}}>
           <View
             style={{
               alignSelf: 'center',
@@ -156,9 +162,9 @@ class OrderContainer extends Component {
             <ActivityIndicator size="large" color="black" />
             <Text>Tunggu sebentar</Text>
           </View>
-        </Modal>
+        </Modal> */}
 
-        {ewarong ? (
+        {/* {ewarong ? (
           <View>
             <FlatList
               keyExtractor={this.keyExtractor}
@@ -167,8 +173,32 @@ class OrderContainer extends Component {
               renderItem={this.renderItem}
             />
           </View>
-        ) : null}
-        <Button
+        ) : null} */}
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Nomor Pesanan </Text>
+          <Text style={{}}>{detailOrder.nomor_pemesanan} </Text>
+        </View>
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Tanggal </Text>
+          <Text style={{}}>{detailOrder.date_pemesanan} </Text>
+        </View>
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Kios </Text>
+          <Text style={{}}>{detailOrder.ewarong.nama_kios} </Text>
+        </View>
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Total Qty </Text>
+          <Text style={{}}>{detailOrder.qty_total} </Text>
+        </View>
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Harga Total</Text>
+          <Text style={{}}>{detailOrder.harga_total} </Text>
+        </View>
+        <View style={{flexDirection: 'row', margin: 20}}>
+          <Text style={{flex: 1}}>Status</Text>
+          <Text style={{}}>{detailOrder.status} </Text>
+        </View>
+        {/* <Button
           title={'PESAN'}
           onPress={() => this.orders()}
           disabled={disabled}
@@ -176,9 +206,9 @@ class OrderContainer extends Component {
             width: Dimension.DEVICE_WIDTH - 20,
             margin: 10,
           }}
-        />
-        <Button
-          title={'BATAL'}
+        /> */}
+        {/* <Button
+          title={'BATAL PESANAN'}
           onPress={() => navigate('HomeScreen')}
           disabled={disabled}
           buttonStyle={{
@@ -187,8 +217,18 @@ class OrderContainer extends Component {
             margin: 10,
             marginTop: 0,
           }}
+        /> */}
+        <Button
+          title={'KEMBALI KE HOME'}
+          onPress={() => navigate('HomeScreen')}
+          disabled={disabled}
+          buttonStyle={{
+            width: Dimension.DEVICE_WIDTH - 20,
+            margin: 10,
+            marginTop: 0,
+          }}
         />
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -204,4 +244,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(OrderDetailContainer);

@@ -91,13 +91,13 @@ class OrderListContainer extends Component {
     return (
       <ListItem
         title={item.ewarong.nama_kios}
+        onPress={() => this.navigateDetail(item)}
         titleStyle={{fontSize: 18, fontWeight: 'bold'}}
         subtitle={
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
-              <Text>{item.item.nama}</Text>
-              <Text>Jumlah : {item.qty}</Text>
-              <Text>Harga : {item.harga}</Text>
+              <Text>Jumlah : {item.qty_total}</Text>
+              <Text>Harga : {item.harga_total}</Text>
             </View>
             <View style={{flex: 2}}>
               <Text>{item.date_pemesanan}</Text>
@@ -113,23 +113,14 @@ class OrderListContainer extends Component {
     );
   };
 
+  navigateDetail = (item) => {
+    const {navigate} = this.props;
+    setTimeout(() => navigate('OrderDetailScreen', {detailOrder: item}), 0);
+  };
+
   render() {
     const {navigate, myorders} = this.props;
     const {ewarong, orders, disabled, modalVisible} = this.state;
-    // let groupdata = [];
-    // if (myorders.length) {
-    //   groupdata = myorders.reduce((result, currentValue) => {
-    //     // If an array already present for key, push it to the array. Else create an array and push the object
-    //     (result[`${currentValue.date_pemesanan}-${currentValue.ewarong_id}`] =
-    //       result[`${currentValue.date_pemesanan}-${currentValue.ewarong_id}`] ||
-    //       []).push({
-    //       nama_kios: currentValue.ewarong.nama_kios,
-    //       data: currentValue,
-    //     });
-    //     // Return the current iteration `result` value, this will be taken as next iteration `result` value and accumulate
-    //     return result;
-    //   }, {});
-    // }
     return (
       <View
         style={{

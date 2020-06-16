@@ -75,8 +75,8 @@ class SearchContainer extends Component {
   render() {
     const {district_id, village_id} = this.state;
     const {districts, villages} = this.props.alldistricts;
-    const district_conv = Object.values(districts);
-    const villages_conv = Object.values(villages);
+    const district_conv = districts ? Object.values(districts) : [];
+    const villages_conv = villages ? Object.values(villages) : [];
     return (
       <ScrollView style={{backgroundColor: '#ececec'}}>
         <View style={{flex: 1, justifyContent: 'space-between'}}>

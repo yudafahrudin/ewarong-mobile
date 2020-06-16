@@ -12,8 +12,8 @@ class OrderListScreen extends Component {
     headerTintColor: '#fff',
   });
 
-  navigateTo = (screen) => {
-    this.props.navigation.navigate(screen);
+  navigateTo = (screen, param) => {
+    this.props.navigation.navigate(screen, param);
   };
 
   render() {

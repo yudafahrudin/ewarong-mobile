@@ -17,16 +17,15 @@ import PropTypes from 'prop-types';
 import {login} from '../../actions/session';
 // COMPONENT
 import Logo from './components/Logo';
-import Input from '../../components/Input';
+import {Button, Text, Input} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Button, Text} from 'react-native-elements';
 // CONSTANTS
 import Colors from '../../constants/colors';
 import Dimension from '../../constants/dimensions';
 import NavigationProps from '../../constants/propTypes/navigation';
 import {fontSizeClass} from '../../constants/styles';
 
-const BG = require('../../assets/app-33.jpg');
+const BG = require('../../assets/app_logo_3.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -49,6 +48,7 @@ class LoginScreen extends Component {
       username: 'cabangmojokerto@gmail.com',
       password: 'adminadmin',
       disabled: false,
+      showEye: false,
     };
   }
 
@@ -108,7 +108,7 @@ class LoginScreen extends Component {
   }
 
   render() {
-    const {disabled, username} = this.state;
+    const {disabled, username, showEye} = this.state;
     const textLogin = disabled ? 'Please wait' : 'Masuk';
 
     return (
@@ -137,6 +137,7 @@ class LoginScreen extends Component {
             alignItems: 'center',
             width: Dimension.DEVICE_WIDTH,
             height: Dimension.DEVICE_HEIGHT,
+            paddingHorizontal: 20,
           }}>
           <Logo />
           <Input
@@ -153,20 +154,40 @@ class LoginScreen extends Component {
             }}
             onChangeText={this.onChangeUsername}
           />
-          <Input
-            placeholder="Password"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="default"
-            returnKeyType="done"
-            keyboardAppearance="light"
-            ref={(input) => {
-              this.passwordInput = input;
-            }}
-            blurOnSubmit
-            secureTextEntry
-            onChangeText={this.onChangePassword}
-          />
+          <View
+            style={{
+              alignSelf: 'flex-start',
+              flexDirection: 'row',
+            }}>
+            <Input
+              placeholder="Password"
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="default"
+              returnKeyType="done"
+              keyboardAppearance="light"
+              ref={(input) => {
+                this.passwordInput = input;
+              }}
+              blurOnSubmit
+              secureTextEntry={!showEye}
+              onChangeText={this.onChangePassword}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({
+                  showEye: !showEye,
+                });
+              }}
+              style={{
+                marginLeft: -35,
+                marginBottom: 10,
+                justifyContent: 'center',
+              }}>
+              <Icon name="eye" size={20} color={Colors.DARK_GREY} />
+            </TouchableOpacity>
+          </View>
+
           <View style={{flexDirection: 'row'}}>
             <Button
               title={textLogin}
