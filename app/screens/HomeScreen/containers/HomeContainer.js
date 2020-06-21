@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Button, Slider} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import _ from 'lodash';
+import _, {filter} from 'lodash';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Modal from 'react-native-modal';
@@ -119,12 +119,47 @@ class HomeContainer extends Component {
     setTimeout(() => navigate('OrderScreen', {ewarong: ewarongData}), 200);
   };
 
+  navigateLogin = () => {
+    const {navigate} = this.props;
+    navigate('Login');
+  };
+
+  countFilterSearch(filters) {
+    let total = 0;
+    if (filters.searchname) {
+      total = total + 1;
+    }
+    if (filters.usemylocation) {
+      total = total + 1;
+    }
+    if (filters.districtfilter) {
+      total = total + 1;
+    }
+    if (filters.villagefilter) {
+      total = total + 1;
+    }
+    return total;
+  }
+
+  countFilter(filters) {
+    let total = 0;
+    if (filters.itemfilter.length > 0) {
+      console.log('masuk 1');
+      total = total + 1;
+    }
+    if (filters.timefilter) {
+      console.log('masuk 2');
+      total = total + 1;
+    }
+    console.log(total);
+    return total;
+  }
+
   render() {
     const {ewarong, filters} = this.props;
     const {user} = this.props.session;
     const isLogin = user ? true : false;
     const {initialPosition, modalVisible, ewarongData, rangekm} = this.state;
-    console.log('ewarong', ewarong);
     let nama_kios = null;
     let lokasi = null;
     let jam_buka = null;
@@ -139,6 +174,9 @@ class HomeContainer extends Component {
       pemesanan = ewarongData.pemesanan;
       stock = ewarongData.stock;
     }
+    const totalsearchfilter = this.countFilterSearch(filters);
+    const totalFilter = this.countFilter(filters);
+
     return (
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -149,12 +187,29 @@ class HomeContainer extends Component {
                 this.props.navigate('SearchScreen', initialPosition)
               }
               icon={
-                <Icon
-                  name="search"
-                  size={18}
-                  style={{marginRight: 5}}
-                  color={Colors.TEXT_BLACK}
-                />
+                totalsearchfilter == 0 ? (
+                  <Icon
+                    name="search"
+                    size={18}
+                    style={{marginRight: 5}}
+                    color={Colors.TEXT_BLACK}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      marginRight: 5,
+                      borderRadius: 10,
+                      height: 20,
+                      width: 20,
+                      alignItems: 'center',
+                      backgroundColor: Colors.RED,
+                      fontSize: 12,
+                    }}>
+                    <Text style={{color: Colors.WHITE}}>
+                      {totalsearchfilter}
+                    </Text>
+                  </View>
+                )
               }
               titleStyle={{
                 color: Colors.TEXT_BLACK,
@@ -170,12 +225,27 @@ class HomeContainer extends Component {
               title="Filter Kios"
               onPress={() => this.props.navigate('FilterScreen')}
               icon={
-                <Icon
-                  name="filter"
-                  size={18}
-                  style={{marginRight: 5}}
-                  color={Colors.TEXT_BLACK}
-                />
+                totalFilter == 0 ? (
+                  <Icon
+                    name="filter"
+                    size={18}
+                    style={{marginRight: 5}}
+                    color={Colors.TEXT_BLACK}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      marginRight: 5,
+                      borderRadius: 10,
+                      height: 20,
+                      width: 20,
+                      alignItems: 'center',
+                      backgroundColor: Colors.RED,
+                      fontSize: 12,
+                    }}>
+                    <Text style={{color: Colors.WHITE}}>{totalFilter}</Text>
+                  </View>
+                )
               }
               titleStyle={{
                 color: Colors.TEXT_BLACK,
@@ -268,7 +338,41 @@ class HomeContainer extends Component {
                       }}
                     />
                   </View>
-                ) : null}
+                ) : (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                    }}>
+                    <Button
+                      title="Login"
+                      onPress={() => this.navigateLogin()}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        marginBottom: 1,
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
+                    <Button
+                      title="Batal"
+                      onPress={() => {
+                        this.setState({
+                          modalVisible: false,
+                        });
+                      }}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
+                  </View>
+                )}
               </View>
             </Modal>
           </View>

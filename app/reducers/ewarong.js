@@ -1,6 +1,8 @@
 import {
   EWARONG,
-  EWARONG_DISTRICTS_VILLAGES,
+  EWARONG_DISTRICTS,
+  EWARONG_DISTRICTS_ID,
+  EWARONG_VILLAGES,
   EWARONG_ITEMS,
   EWARONG_PARAMS,
   EWARONG_MYORDERS,
@@ -8,7 +10,12 @@ import {
 
 const initialState = {
   ewarong: null,
-  alldistricts: [],
+  alldistricts: {
+    districts: [],
+    villages: [],
+  },
+  district_id: -1,
+  allvillages: [],
   allItems: [],
   myorders: [],
   filters: {
@@ -21,6 +28,7 @@ const initialState = {
     rangekm: 1,
     showRadius: false,
     usemylocation: false,
+    searchname: null,
   },
 };
 
@@ -33,10 +41,22 @@ const reducer = (state = initialState, action) => {
         ewarong: payload,
       };
     }
-    case EWARONG_DISTRICTS_VILLAGES: {
+    case EWARONG_DISTRICTS: {
       return {
         ...state,
         alldistricts: payload,
+      };
+    }
+    case EWARONG_DISTRICTS_ID: {
+      return {
+        ...state,
+        district_id: payload,
+      };
+    }
+    case EWARONG_VILLAGES: {
+      return {
+        ...state,
+        allvillages: payload,
       };
     }
     case EWARONG_ITEMS: {
@@ -52,7 +72,6 @@ const reducer = (state = initialState, action) => {
       };
     }
     case EWARONG_PARAMS: {
-      console.log(payload);
       return {
         ...state,
         filters: {

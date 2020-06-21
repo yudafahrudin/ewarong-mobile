@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
 });
 
-class LoginScreen extends Component {
+class NavigationRegisterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -119,102 +119,38 @@ class LoginScreen extends Component {
           Dimension.DEVICE_HEIGHT / 10 - (Dimension.DEVICE_HEIGHT * 2) / 7
         }>
         <StatusBar backgroundColor={Colors.BLACK} />
-        <TouchableOpacity
-          style={{
-            padding: 10,
-            position: 'absolute',
-            margin: 20,
-            right: 0,
-          }}
-          onPress={() => this.navigateApp('HomeScreen')}>
-          <Text style={{fontSize: 15}}>
-            Lihat tanpa login <Icon name="arrow-right" size={15} />
-          </Text>
-        </TouchableOpacity>
+
         <View
           style={{
-            justifyContent: 'center',
+            // justifyContent: 'center',
             alignItems: 'center',
             width: Dimension.DEVICE_WIDTH,
             height: Dimension.DEVICE_HEIGHT,
-            paddingHorizontal: 20,
+            padding: Dimension.DEVICE_HEIGHT / 14,
           }}>
           <Logo />
           <Text style={{fontWeight: 'bold', fontSize: 25}}>
             E-Warong Sidoarjo
           </Text>
-          <Input
-            placeholder="Email"
-            autoFocus={false}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="default"
-            keyboardAppearance="light"
-            returnKeyType="next"
-            value={`${username}`}
-            ref={(input) => {
-              this.emailInput = input;
-            }}
-            onChangeText={this.onChangeUsername}
-          />
           <View
             style={{
-              alignSelf: 'flex-start',
               flexDirection: 'row',
+              marginTop: Dimension.DEVICE_HEIGHT / 6,
+              justifyContent: 'center',
+              alignItems: 'flex-end',
             }}>
-            <Input
-              placeholder="Password"
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType="default"
-              returnKeyType="done"
-              keyboardAppearance="light"
-              ref={(input) => {
-                this.passwordInput = input;
-              }}
-              blurOnSubmit
-              secureTextEntry={!showEye}
-              onChangeText={this.onChangePassword}
-            />
             <TouchableOpacity
-              onPress={() => {
-                this.setState({
-                  showEye: !showEye,
-                });
-              }}
-              style={{
-                marginLeft: -35,
-                marginBottom: 10,
-                justifyContent: 'center',
-              }}>
-              <Icon
-                name={!showEye ? 'eye' : 'eye-slash'}
-                size={20}
-                color={Colors.DARK_GREY}
-              />
+              onPress={() => this.props.navigation.navigate('Register')}
+              style={{alignItems: 'center', marginRight: 50}}>
+              <Icon name="user" size={100} color={Colors.DARK_GREY} />
+              <Text style={{fontWeight: 'bold'}}>User</Text>
             </TouchableOpacity>
-          </View>
-
-          <View style={{flexDirection: 'row'}}>
-            <Button
-              title={textLogin}
-              buttonStyle={{
-                width: 100,
-              }}
-              onPress={this.onPressLogin}
-              disabled={disabled}
-            />
-            <Button
-              title="Daftar"
-              buttonStyle={{
-                marginLeft: 20,
-                width: 100,
-                backgroundColor: Colors.YELLOWBLACK,
-              }}
-              onPress={() =>
-                this.props.navigation.navigate('NavigationRegister')
-              }
-            />
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('RegisterEwarong')}
+              style={{alignItems: 'center'}}>
+              <Icon name="home" size={100} color={Colors.DARK_GREY} />
+              <Text style={{fontWeight: 'bold'}}>User + Pemilik Kios</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -222,7 +158,7 @@ class LoginScreen extends Component {
   }
 }
 
-LoginScreen.propTypes = {
+NavigationRegisterScreen.propTypes = {
   navigation: NavigationProps.isRequired,
   actions: PropTypes.shape({}).isRequired,
 };
@@ -237,4 +173,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NavigationRegisterScreen);

@@ -2,7 +2,9 @@ import api from '../services/api';
 import EndPoints from '../constants/endPoints';
 import {
   EWARONG,
-  EWARONG_DISTRICTS_VILLAGES,
+  EWARONG_DISTRICTS,
+  EWARONG_DISTRICTS_ID,
+  EWARONG_VILLAGES,
   EWARONG_ITEMS,
   EWARONG_PARAMS,
   EWARONG_MYORDERS,
@@ -14,6 +16,9 @@ export const getEwarong = () => (dispatch, getState) => {
   const {filters} = getState().ewarong;
 
   if (filters) {
+    if (filters.searchname) {
+      params['searchname'] = filters.searchname;
+    }
     if (filters.timefilter) {
       params['time'] = filters.timefilter;
     }
@@ -45,11 +50,32 @@ export const getEwarong = () => (dispatch, getState) => {
     },
   );
 };
+
 export const getAllDistricts = () => (dispatch, getState) => {
   return api(getState, dispatch, EndPoints.alldistricts).then((response) => {
     const {data} = response;
     dispatch({
-      type: EWARONG_DISTRICTS_VILLAGES,
+      type: EWARONG_DISTRICTS,
+      payload: data.data,
+    });
+  });
+};
+
+export const setDistrictId = (id) => (dispatch, getState) => {
+  return dispatch({
+    type: EWARONG_DISTRICTS_ID,
+    payload: id,
+  });
+};
+
+export const getAllVillages = (id) => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.allvillages, 'get', {
+    district_id: id,
+  }).then((response) => {
+    console.log('response get villages', response);
+    const {data} = response;
+    dispatch({
+      type: EWARONG_VILLAGES,
       payload: data.data,
     });
   });

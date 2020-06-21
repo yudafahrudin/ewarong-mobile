@@ -4,23 +4,26 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable arrow-parens */
 import React, {Component} from 'react';
-import _, {values, filter} from 'lodash';
+import _ from 'lodash';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {
   View,
+  StyleSheet,
   BackHandler,
   KeyboardAvoidingView,
   ScrollView,
   SafeAreaView,
   Alert,
   StatusBar,
+  ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Picker} from '@react-native-community/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {Button, Input, Text} from 'react-native-elements';
-// import {TabView, SceneMap} from 'react-native-tab-view';
+import {TabView, SceneMap} from 'react-native-tab-view';
 import Geolocation from '@react-native-community/geolocation';
 // ACTION
 import {
@@ -36,12 +39,14 @@ import Colors from '../../constants/colors';
 import Dimension from '../../constants/dimensions';
 import NavigationProps from '../../constants/propTypes/navigation';
 
-class RegisterScreen extends Component {
+class RegisterEwarongScreen extends Component {
   _isMounted = false;
   state = {
     name: null,
     address: null,
-    type: 'umum',
+    index: 0,
+    type: 'rpk',
+    lokasi: '',
     password: null,
     password_conf: null,
     email: null,
@@ -53,10 +58,15 @@ class RegisterScreen extends Component {
     timeShow: null,
     telp: null,
     district_id: -1,
+    edistrict_id: -1,
     village_id: -1,
+    evillage_id: -1,
     districts: [],
+    edistricts: [],
     villages: [],
+    evillages: [],
     villagesUses: [],
+    evillagesUses: [],
   };
 
   async componentDidMount() {
@@ -70,11 +80,16 @@ class RegisterScreen extends Component {
     await actions.getAllDistricts().then(() => {
       const {alldistricts} = this.props;
       const districts = Object.values(alldistricts.districts);
+      const edistricts = Object.values(alldistricts.districts);
       const villages = Object.values(alldistricts.villages);
+      const evillages = Object.values(alldistricts.villages);
       this.setState({
         districts,
+        edistricts,
         villages,
+        evillages,
         villagesUses: villages,
+        evillagesUses: evillages,
       });
     });
   }
@@ -103,12 +118,14 @@ class RegisterScreen extends Component {
       latitude,
       longitude,
       timeShow,
-      telp,
+      lokasi,
+      edistrict_id,
       district_id,
+      evillage_id,
       village_id,
+      telp,
     } = this.state;
-    console.log(this.state);
-    if (district_id != -1 && village_id != -1 && type == 'umum') {
+    if (name && password && password_conf && email && type == 'umum') {
       if (password !== password_conf) {
         Alert.alert('Error', 'Password dan konfirmasi password tidak sama');
         return null;
@@ -123,8 +140,6 @@ class RegisterScreen extends Component {
           password,
           email,
           address,
-          district_id,
-          village_id,
         },
         () => navigation.navigate('Login'),
       );
@@ -140,6 +155,11 @@ class RegisterScreen extends Component {
       telp &&
       latitude &&
       longitude &&
+      lokasi &&
+      edistrict_id &&
+      district_id &&
+      evillage_id &&
+      village_id &&
       timeShow &&
       type == 'rpk'
     ) {
@@ -161,6 +181,11 @@ class RegisterScreen extends Component {
         latitude,
         longitude,
         timeShow,
+        lokasi,
+        edistrict_id,
+        district_id,
+        evillage_id,
+        village_id,
         telp,
       });
       await actions.register(
@@ -175,6 +200,11 @@ class RegisterScreen extends Component {
           latitude,
           longitude,
           jam_buka: timeShow,
+          lokasi,
+          edistrict_id,
+          district_id,
+          evillage_id,
+          village_id,
         },
         () => navigation.navigate('Login'),
       );
@@ -221,25 +251,16 @@ class RegisterScreen extends Component {
     });
   };
 
+  onLocation = (lokasi) => {
+    this.setState({
+      lokasi,
+    });
+  };
+
   onChangeMail = (email) => {
     this.setState({
       email,
     });
-  };
-
-  setSelectedValueDistricts = (itemValue) => {
-    const villages = this.state.villages.filter((val) => {
-      if (Number(val.district_id) == Number(itemValue)) {
-        return val;
-      }
-    });
-    if (villages.length > 0) {
-      this.setState({district_id: itemValue, villagesUses: villages});
-    }
-  };
-
-  setSelectedValueVillages = (itemValue) => {
-    this.setState({village_id: itemValue});
   };
 
   async getGeoLocation() {
@@ -277,6 +298,7 @@ class RegisterScreen extends Component {
       showDate: !showDate,
     });
   }
+
   onChangeTime(value) {
     const {showDate} = this.state;
     if (value.type == 'set') {
@@ -289,41 +311,84 @@ class RegisterScreen extends Component {
       showDate: !showDate,
     });
   }
+
+  setSelectedValueDistricts = (itemValue) => {
+    const villages = this.state.villages.filter((val) => {
+      if (Number(val.district_id) == Number(itemValue)) {
+        return val;
+      }
+    });
+    if (villages.length > 0) {
+      this.setState({district_id: itemValue, villagesUses: villages});
+    }
+  };
+
+  setSelectedValueVillages = (itemValue) => {
+    this.setState({village_id: itemValue});
+  };
+
+  esetSelectedValueDistricts = (itemValue) => {
+    const villages = this.state.villages.filter((val) => {
+      if (Number(val.district_id) == Number(itemValue)) {
+        return val;
+      }
+    });
+    if (villages.length > 0) {
+      this.setState({edistrict_id: itemValue, evillagesUses: villages});
+    }
+  };
+
+  esetSelectedValueVillages = (itemValue) => {
+    this.setState({evillage_id: itemValue});
+  };
+
   render() {
     const {
       disabled,
+      latitude,
+      longitude,
+      timeShow,
+      showDate,
       district_id,
+      edistrict_id,
       village_id,
+      evillage_id,
       districts,
+      edistricts,
       villagesUses,
+      evillagesUses,
     } = this.state;
+
     const district_conv = districts ? districts : [];
+    const edistrict_conv = edistricts ? edistricts : [];
     const village_conv = villagesUses ? villagesUses : [];
+    const evillage_conv = evillagesUses ? evillagesUses : [];
 
     return (
       <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.WHITE}}>
         <StatusBar backgroundColor={Colors.BLACK} />
-        <ScrollView>
+
+        <ScrollView style={{paddingTop: 50, marginBottom: 10, flex: 1}}>
           <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              height: Dimension.DEVICE_HEIGHT,
+              flex: 1,
+              marginBottom: '30%',
             }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 20,
+              }}>
+              <Icon name="home" size={28} color={Colors.DARK_GREY} />
+              <Text style={{fontWeight: 'bold', fontSize: 18, marginLeft: 15}}>
+                FORM PENDAFTARAN EWARONG
+              </Text>
+            </View>
             <View style={{width: Dimension.DEVICE_WIDTH - 50}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: 20,
-                }}>
-                <Icon name="user" size={30} color={Colors.DARK_GREY} />
-                <Text
-                  style={{fontWeight: 'bold', fontSize: 21, marginLeft: 15}}>
-                  FORM PENDAFTARAN USER
-                </Text>
-              </View>
               <Input
                 placeholder="Nama"
                 autoCapitalize="none"
@@ -425,16 +490,151 @@ class RegisterScreen extends Component {
                 onChangeText={this.onConfirmPassword}
               />
             </View>
+            <Text style={{fontSize: 18}}> Informasi Kios </Text>
+            <View style={{width: Dimension.DEVICE_WIDTH - 50}}>
+              <Input
+                placeholder="Nama Kios"
+                autoFocus={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                keyboardAppearance="light"
+                returnKeyType="next"
+                onChangeText={this.onNamceKiosChange}
+                ref={(input) => {
+                  this.kiosNameInput = input;
+                }}
+                onSubmitEditing={() => {
+                  this.telpInput.focus();
+                }}
+              />
+              {edistrict_conv.length > 0 ? (
+                <Picker
+                  selectedValue={edistrict_id}
+                  onValueChange={this.esetSelectedValueDistricts}>
+                  <Picker.Item key={-1} label={'Pilih Kecamatan'} value={-1} />
+                  {edistrict_conv.map((val, key) => {
+                    return (
+                      <Picker.Item key={key} label={val.name} value={val.id} />
+                    );
+                  })}
+                </Picker>
+              ) : null}
+              {evillage_conv.length > 0 ? (
+                <Picker
+                  selectedValue={evillage_id}
+                  enabled={evillage_conv.length === 0 ? false : true}
+                  onValueChange={this.esetSelectedValueVillages}>
+                  <Picker.Item key={-1} label={'Pilih Desa'} value={-1} />
+                  {evillage_conv.map((val, key) => {
+                    return (
+                      <Picker.Item key={key} label={val.name} value={val.id} />
+                    );
+                  })}
+                </Picker>
+              ) : null}
+              <Input
+                placeholder="Lokasi"
+                autoFocus={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                keyboardAppearance="light"
+                returnKeyType="done"
+                onChangeText={this.onLocation}
+                ref={(input) => {
+                  this.location = input;
+                }}
+              />
+              <Input
+                placeholder="No Telp"
+                autoFocus={false}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                keyboardAppearance="light"
+                returnKeyType="done"
+                onChangeText={this.onNotelp}
+                ref={(input) => {
+                  this.telpInput = input;
+                }}
+              />
+              <View style={{flexDirection: 'row', padding: 10}}>
+                <Text
+                  style={{
+                    padding: 10,
+                    borderWidth: 0,
+                    marginRight: 20,
+                    color: Colors.DARK_GREY,
+                  }}>
+                  {timeShow ? timeShow : 'Pilih Jam Buka'}
+                </Text>
+                <Button
+                  buttonStyle={{
+                    width: 100,
+                  }}
+                  onPress={() => this.showTimepicker()}
+                  title="Buka Jam"
+                />
+              </View>
+              {showDate ? (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={new Date()}
+                  mode={'time'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(val) => this.onChangeTime(val)}
+                />
+              ) : null}
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                marginTop: 25,
-              }}>
+              <View style={{flexDirection: 'row'}}>
+                <Input
+                  containerStyle={{
+                    width: Dimension.DEVICE_WIDTH / 2 - 20,
+                  }}
+                  placeholder="Latitude"
+                  autoFocus={false}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  keyboardAppearance="light"
+                  returnKeyType="next"
+                  defaultValue={latitude.toString()}
+                  disabled={true}
+                  ref={(input) => {
+                    this.latitudeInput = input;
+                  }}
+                />
+                <Input
+                  containerStyle={{
+                    width: Dimension.DEVICE_WIDTH / 2 - 20,
+                  }}
+                  placeholder="Longitude"
+                  autoFocus={false}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  keyboardType="default"
+                  keyboardAppearance="light"
+                  returnKeyType="next"
+                  defaultValue={longitude.toString()}
+                  disabled={true}
+                  ref={(input) => {
+                    this.longitudeInput = input;
+                  }}
+                />
+              </View>
+              <Button
+                title="Cari Lokasi"
+                onPress={() => this.getGeoLocation()}
+                disabled={disabled}
+              />
+            </View>
+            <View style={{flexDirection: 'row'}}>
               <Button
                 title="Daftar"
                 buttonStyle={{
+                  marginTop: 25,
                   width: 100,
                 }}
                 onPress={this.onRegister}
@@ -444,6 +644,7 @@ class RegisterScreen extends Component {
                 title="Clear"
                 buttonStyle={{
                   width: 100,
+                  marginTop: 25,
                   marginLeft: 10,
                   backgroundColor: Colors.ORANGE,
                 }}
@@ -454,8 +655,9 @@ class RegisterScreen extends Component {
               <Button
                 title="Batal"
                 buttonStyle={{
-                  width: 100,
+                  marginTop: 25,
                   marginLeft: 10,
+                  width: 100,
                   backgroundColor: Colors.REDBLACK,
                 }}
                 onPress={() =>
@@ -470,28 +672,7 @@ class RegisterScreen extends Component {
   }
 }
 
-{
-  /* 
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={({route}) => {
-            switch (route.key) {
-              case 'user':
-                return this.firstRoute();
-              case 'userrpk':
-                return this.secondRoute();
-              default:
-                return null;
-            }
-          }}
-          onIndexChange={this.setIndex}
-          initialLayout={{
-            width: Dimension.DEVICE_WIDTH,
-          }}
-        /> */
-}
-
-RegisterScreen.propTypes = {
+RegisterEwarongScreen.propTypes = {
   navigation: NavigationProps.isRequired,
   actions: PropTypes.shape({}).isRequired,
 };
@@ -513,4 +694,7 @@ const mapDispatchToProps = (dispatch) => ({
   ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RegisterEwarongScreen);
