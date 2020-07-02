@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Button, Slider} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import _, {filter} from 'lodash';
 import MapView, {Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Modal from 'react-native-modal';
@@ -155,6 +154,25 @@ class HomeContainer extends Component {
     return total;
   }
 
+  convertPemesanan(pemesanan) {
+    const totalOpen = pemesanan.filter((val) => val.status == 'OPEN').length;
+    const totalConfirm = pemesanan.filter((val) => val.status == 'CONFIRM')
+      .length;
+    const totalRejected = pemesanan.filter((val) => val.status == 'REJECTED')
+      .length;
+    const totalExpired = pemesanan.filter((val) => val.status == 'EXPIRED')
+      .length;
+
+    return (
+      <View>
+        <Text>Total OPEN : {totalOpen}</Text>
+        <Text>Total CONFIRM : {totalConfirm}</Text>
+        <Text>Total REJECTED : {totalRejected}</Text>
+        <Text>Total EXPIRED : {totalExpired}</Text>
+      </View>
+    );
+  }
+
   render() {
     const {ewarong, filters} = this.props;
     const {user} = this.props.session;
@@ -295,13 +313,16 @@ class HomeContainer extends Component {
                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                       Riwayat Pemesanan
                     </Text>
-                    {pemesanan.map((val, key) => {
-                      return (
-                        <Text key={key}>
-                          {key + 1} - {val.date_pemesanan} - {val.status}
-                        </Text>
-                      );
-                    })}
+                    {/* {pemesanan.map((val, key) => {
+                      if (moment().format('YYYY-MM-DD') == val.date_pemesanan) {
+                        return (
+                          <Text key={key}>
+                            {key + 1} - {val.date_pemesanan} - {val.status}
+                          </Text>
+                        );
+                      }
+                    })} */}
+                    {this.convertPemesanan(pemesanan)}
                   </View>
                 </ScrollView>
                 {isLogin ? (
@@ -345,7 +366,7 @@ class HomeContainer extends Component {
                       bottom: 0,
                     }}>
                     <Button
-                      title="Login"
+                      title="Pesan"
                       onPress={() => this.navigateLogin()}
                       titleStyle={{
                         color: Colors.TEXT_BLACK,

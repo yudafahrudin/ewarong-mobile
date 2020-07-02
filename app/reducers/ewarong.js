@@ -6,6 +6,7 @@ import {
   EWARONG_ITEMS,
   EWARONG_PARAMS,
   EWARONG_MYORDERS,
+  EWARONG_CART,
 } from '../constants/actionTypes';
 
 const initialState = {
@@ -14,10 +15,12 @@ const initialState = {
     districts: [],
     villages: [],
   },
+  chart: [],
   district_id: -1,
   allvillages: [],
   allItems: [],
   myorders: [],
+  cart: [],
   filters: {
     timefilter: null,
     itemfilter: [],
@@ -76,6 +79,14 @@ const reducer = (state = initialState, action) => {
         ...state,
         filters: {
           ...initialState.filters,
+          ...payload,
+        },
+      };
+    }
+    case EWARONG_CART: {
+      return {
+        ...state,
+        chart: {
           ...payload,
         },
       };

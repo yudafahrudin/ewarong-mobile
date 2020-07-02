@@ -1,5 +1,6 @@
 export default {
-  BASE_URL: 'http://192.168.18.6/finalproject_laravel/public',
+  // BASE_URL: 'http://192.168.18.6/finalproject_laravel/public',
+  BASE_URL: 'https://pinterusmedia.com',
   login: '/api/login',
   register: '/api/register',
   profile: '/api/profile',
@@ -9,5 +10,6 @@ export default {
   allitems: '/api/allitems',
   orders: '/api/orderuser',
   myorders: '/api/getorderbyuser',
+  todaychartuser: '/api/todaychartuser',
   profileImageUrl: '/user/profile/',
 };

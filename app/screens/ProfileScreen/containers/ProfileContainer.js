@@ -45,61 +45,70 @@ class ProfileContainer extends Component {
         }}>
         <View
           style={{
-            width: 150,
-            height: 150,
-            borderRadius: 100,
-            marginVertical: 10,
-            alignSelf: 'center',
+            height: Dimension.DEVICE_HEIGHT / 1.3,
+            alignContent: 'center',
+            justifyContent: 'center',
           }}>
-          {user ? (
-            user.image_url ? (
-              <Image
-                source={{
-                  uri: `${EndPoint.BASE_URL}${EndPoint.profileImageUrl}/${user.image_url}`,
-                }}
-                style={{width: 150, height: 150, borderRadius: 50}}
-              />
-            ) : (
-              <Image
-                source={require('../../../assets/user.png')}
-                style={{width: 150, height: 150, borderRadius: 50}}
-              />
-            )
-          ) : null}
+          <View
+            style={{
+              width: 150,
+              height: 150,
+              borderRadius: 100,
+              marginVertical: 10,
+              alignSelf: 'center',
+            }}>
+            {user ? (
+              user.image_url ? (
+                <Image
+                  source={{
+                    uri: `${EndPoint.BASE_URL}${EndPoint.profileImageUrl}/${user.image_url}`,
+                  }}
+                  style={{width: 150, height: 150, borderRadius: 50}}
+                />
+              ) : (
+                <Image
+                  source={require('../../../assets/user.png')}
+                  style={{width: 150, height: 150, borderRadius: 50}}
+                />
+              )
+            ) : null}
+          </View>
+          <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>
+            {user.name}{' '}
+          </Text>
+          <Text style={{alignSelf: 'center', marginVertical: 10, fontSize: 15}}>
+            {user.email}{' '}
+          </Text>
+          <Text style={{alignSelf: 'center', fontSize: 15}}>
+            Tanggal Join {user.date_register}{' '}
+          </Text>
+          <Text style={{alignSelf: 'center', fontSize: 13}}>
+            {user.address}{' '}
+          </Text>
+          {/* <Button
+            title={'EDIT'}
+            onPress={() => navigate('HomeScreen')}
+            disabled={disabled}
+            buttonStyle={{
+              alignSelf: 'center',
+              width: Dimension.DEVICE_WIDTH - 100,
+              margin: 10,
+              marginTop: 10,
+            }}
+          /> */}
+          <Button
+            title={'LOGOUT'}
+            onPress={() => this.logoutSession()}
+            disabled={disabled}
+            buttonStyle={{
+              backgroundColor: Colors.REDBLACK,
+              alignSelf: 'center',
+              width: Dimension.DEVICE_WIDTH - 100,
+              margin: 10,
+              marginTop: 25,
+            }}
+          />
         </View>
-        <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>
-          {user.name}{' '}
-        </Text>
-        <Text style={{alignSelf: 'center', marginVertical: 10, fontSize: 15}}>
-          {user.email}{' '}
-        </Text>
-        <Text style={{alignSelf: 'center', fontSize: 15}}>
-          Tanggal Join {user.date_register}{' '}
-        </Text>
-        <Text style={{alignSelf: 'center', fontSize: 13}}>{user.address} </Text>
-        <Button
-          title={'EDIT'}
-          onPress={() => navigate('HomeScreen')}
-          disabled={disabled}
-          buttonStyle={{
-            alignSelf: 'center',
-            width: Dimension.DEVICE_WIDTH - 100,
-            margin: 10,
-            marginTop: 0,
-          }}
-        />
-        <Button
-          title={'LOGOUT'}
-          onPress={() => this.logoutSession()}
-          disabled={disabled}
-          buttonStyle={{
-            backgroundColor: Colors.REDBLACK,
-            alignSelf: 'center',
-            width: Dimension.DEVICE_WIDTH - 100,
-            margin: 10,
-            marginTop: 0,
-          }}
-        />
       </ScrollView>
     );
   }

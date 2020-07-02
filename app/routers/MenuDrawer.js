@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
   editProfile: {
     fontSize: 15,
     paddingBottom: 5,
-    color: 'red',
     textAlign: 'left',
   },
   img: {
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
   },
   bottomLinks: {
     flex: 1,
-    paddingTop: 20,
   },
   link: {
     flex: 1,
@@ -81,11 +79,12 @@ const styles = StyleSheet.create({
 });
 
 class MenuDrawer extends Component {
-  navLink(nav, text) {
+  navLink(nav, text, icon = 'home') {
     return (
       <TouchableOpacity
-        style={{height: 45}}
+        style={{padding: 20, flexDirection: 'row'}}
         onPress={() => this.props.navigation.navigate(nav)}>
+        <Icon name={icon} size={25} color="black" />
         <Text style={styles.link}>{text}</Text>
       </TouchableOpacity>
     );
@@ -153,27 +152,67 @@ class MenuDrawer extends Component {
           </View>
           {user ? (
             <View style={styles.bottomLinks}>
-              {this.navLink('ProfileScreen', 'Profil')}
+              {this.navLink('ProfileScreen', 'Profil', 'user')}
             </View>
           ) : null}
           {user ? (
-            user.access_type == 'umum' ? (
+            user.access_type == 'umum' || user.access_type == 'superadmin' ? (
               <View
                 style={[
                   styles.bottomLinks,
                   {borderTopColor: 'lightgray', borderTopWidth: 1},
                 ]}>
-                {this.navLink('OrderListScreen', 'Pesananku')}
+                {this.navLink(
+                  'OrderListScreen',
+                  'Pesananku',
+                  'shopping-basket',
+                )}
               </View>
             ) : null
           ) : null}
-
+          {user ? (
+            user.access_type == 'rpk' || user.access_type == 'superadmin' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink(
+                  'OrderListScreen',
+                  'Penjualan',
+                  'shopping-basket',
+                )}
+              </View>
+            ) : null
+          ) : null}
+          {user ? (
+            user.access_type == 'admin' || user.access_type == 'superadmin' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink(
+                  'OrderListScreen',
+                  'Survei Kios',
+                  'shopping-basket',
+                )}
+              </View>
+            ) : null
+          ) : null}
           <View
             style={[
               styles.bottomLinks,
               {borderTopColor: 'lightgray', borderTopWidth: 1},
             ]}>
-            {this.navLink('AboutScreen', 'Tentang')}
+            {this.navLink('ReportScreen', 'Report', 'area-chart')}
+          </View>
+          <View
+            style={[
+              styles.bottomLinks,
+              {borderTopColor: 'lightgray', borderTopWidth: 1},
+            ]}>
+            {this.navLink('AboutScreen', 'Tentang', 'info')}
           </View>
         </ScrollView>
         <View style={styles.footer}>

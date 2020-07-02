@@ -251,6 +251,18 @@ class RegisterEwarongScreen extends Component {
     });
   };
 
+  onLatitude = (latitude) => {
+    this.setState({
+      latitude,
+    });
+  };
+
+  onLongitude = (longitude) => {
+    this.setState({
+      longitude,
+    });
+  };
+
   onLocation = (lokasi) => {
     this.setState({
       lokasi,
@@ -600,8 +612,8 @@ class RegisterEwarongScreen extends Component {
                   keyboardType="default"
                   keyboardAppearance="light"
                   returnKeyType="next"
+                  onChangeText={this.onLatitude}
                   defaultValue={latitude.toString()}
-                  disabled={true}
                   ref={(input) => {
                     this.latitudeInput = input;
                   }}
@@ -617,8 +629,8 @@ class RegisterEwarongScreen extends Component {
                   keyboardType="default"
                   keyboardAppearance="light"
                   returnKeyType="next"
+                  onChangeText={this.onLongitude}
                   defaultValue={longitude.toString()}
-                  disabled={true}
                   ref={(input) => {
                     this.longitudeInput = input;
                   }}

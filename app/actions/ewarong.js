@@ -8,6 +8,7 @@ import {
   EWARONG_ITEMS,
   EWARONG_PARAMS,
   EWARONG_MYORDERS,
+  EWARONG_CART,
 } from '../constants/actionTypes';
 import {Alert} from 'react-native';
 
@@ -80,6 +81,7 @@ export const getAllVillages = (id) => (dispatch, getState) => {
     });
   });
 };
+
 export const getAllItems = () => (dispatch, getState) => {
   return api(getState, dispatch, EndPoints.allitems).then((response) => {
     const {data} = response;
@@ -116,6 +118,16 @@ export const getMyOrders = () => (dispatch, getState) => {
     const {data} = response;
     dispatch({
       type: EWARONG_MYORDERS,
+      payload: data.data,
+    });
+  });
+};
+
+export const getMyCart = () => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.todaychartuser).then((response) => {
+    const {data} = response;
+    dispatch({
+      type: EWARONG_CART,
       payload: data.data,
     });
   });
