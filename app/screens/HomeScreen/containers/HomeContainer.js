@@ -6,6 +6,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Linking,
+  Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -173,6 +175,17 @@ class HomeContainer extends Component {
     );
   }
 
+  openMAPS = (label = 'Kios', lat, lang) => {
+    const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
+    const latLng = `${lat},${lang}`;
+    const url = Platform.select({
+      ios: `${scheme}${label}@${latLng}`,
+      android: `${scheme}${latLng}(${label})`,
+    });
+
+    Linking.openURL(url);
+  };
+
   render() {
     const {ewarong, filters} = this.props;
     const {user} = this.props.session;
@@ -184,6 +197,8 @@ class HomeContainer extends Component {
     let telp = null;
     let pemesanan = [];
     let stock = [];
+    let lat = 0;
+    let lng = 0;
     if (ewarongData) {
       nama_kios = ewarongData.nama_kios;
       lokasi = ewarongData.lokasi;
@@ -191,6 +206,8 @@ class HomeContainer extends Component {
       telp = ewarongData.telp;
       pemesanan = ewarongData.pemesanan;
       stock = ewarongData.stock;
+      lat = ewarongData.latitude;
+      lng = ewarongData.longitude;
     }
     const totalsearchfilter = this.countFilterSearch(filters);
     const totalFilter = this.countFilter(filters);
@@ -313,15 +330,6 @@ class HomeContainer extends Component {
                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                       Riwayat Pemesanan
                     </Text>
-                    {/* {pemesanan.map((val, key) => {
-                      if (moment().format('YYYY-MM-DD') == val.date_pemesanan) {
-                        return (
-                          <Text key={key}>
-                            {key + 1} - {val.date_pemesanan} - {val.status}
-                          </Text>
-                        );
-                      }
-                    })} */}
                     {this.convertPemesanan(pemesanan)}
                   </View>
                 </ScrollView>
@@ -331,6 +339,18 @@ class HomeContainer extends Component {
                       position: 'absolute',
                       bottom: 0,
                     }}>
+                    <Button
+                      title="Lihat di MAP"
+                      onPress={() => this.openMAPS(nama_kios, lat, lng)}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        marginBottom: 1,
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
                     <Button
                       title="Pesan"
                       onPress={() => this.navigateOrder()}
@@ -365,6 +385,18 @@ class HomeContainer extends Component {
                       position: 'absolute',
                       bottom: 0,
                     }}>
+                    <Button
+                      title="Lihat di MAP"
+                      onPress={() => this.openMAPS(nama_kios, lat, lng)}
+                      titleStyle={{
+                        color: Colors.TEXT_BLACK,
+                      }}
+                      buttonStyle={{
+                        marginBottom: 1,
+                        backgroundColor: Colors.LIGHT_GREY,
+                        width: Dimension.DEVICE_WIDTH - 38,
+                      }}
+                    />
                     <Button
                       title="Pesan"
                       onPress={() => this.navigateLogin()}

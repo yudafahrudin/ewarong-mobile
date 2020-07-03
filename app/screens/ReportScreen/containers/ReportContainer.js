@@ -21,8 +21,12 @@ class ReportContainer extends Component {
   };
 
   async componentDidMount() {
-    const {actions} = this.props;
-    await actions.getMyCart(true);
+    const {actions, user} = this.props;
+    if (user.access_type != 'admin') {
+      await actions.getMyCart();
+    } else {
+      await actions.getMyCart(true);
+    }
   }
 
   keyExtractor = (item, index) => index.toString();
@@ -60,74 +64,77 @@ class ReportContainer extends Component {
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 20}}>
           Report Bulan Ini
         </Text>
-        <LineChart
-          data={{
-            labels: this.labelDay(),
-            datasets: [
-              {
-                data: [],
+
+        <View>
+          <LineChart
+            data={{
+              labels: this.labelDay(),
+              datasets: [
+                {
+                  data: cartFirst,
+                },
+              ],
+            }}
+            width={Dimension.DEVICE_WIDTH - 20} // from react-native
+            height={220}
+            yAxisSuffix="k"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: Colors.LIGHT_GREY,
+              backgroundGradientFrom: '#fb8c00',
+              backgroundGradientTo: '#ffa726',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
               },
-            ],
-          }}
-          width={Dimension.DEVICE_WIDTH - 20} // from react-native
-          height={220}
-          yAxisSuffix="k"
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: Colors.LIGHT_GREY,
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-          }}
-        />
-        <LineChart
-          data={{
-            labels: this.labelDay2(),
-            datasets: [
-              {
-                data: cartSecond,
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#ffa726',
               },
-            ],
-          }}
-          width={Dimension.DEVICE_WIDTH - 20} // from react-native
-          height={220}
-          yAxisSuffix="k"
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: Colors.LIGHT_GREY,
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-          }}
-        />
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+            }}
+          />
+          <LineChart
+            data={{
+              labels: this.labelDay2(),
+              datasets: [
+                {
+                  data: cartSecond,
+                },
+              ],
+            }}
+            width={Dimension.DEVICE_WIDTH - 20} // from react-native
+            height={220}
+            yAxisSuffix="k"
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: Colors.LIGHT_GREY,
+              backgroundGradientFrom: '#fb8c00',
+              backgroundGradientTo: '#ffa726',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#ffa726',
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+            }}
+          />
+        </View>
       </View>
     );
   };
@@ -153,7 +160,6 @@ class ReportContainer extends Component {
   };
 
   cartForAdmin = (ewarongs = [], penjualan = []) => {
-    const ewarongKeys = Object.keys(ewarongs);
     const ewarongArray = [];
     this.labelYears().forEach((key) => {
       ewarongArray[key] = ewarongs[key];
@@ -164,39 +170,42 @@ class ReportContainer extends Component {
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 20}}>
           Report Pendaftaran Tahun Ini
         </Text>
-        <LineChart
-          data={{
-            labels: this.labelYears(),
-            datasets: [
-              {
-                data: filterEmpy,
+        {filterEmpy ? (
+          <LineChart
+            data={{
+              labels: this.labelYears(),
+              datasets: [
+                {
+                  data: filterEmpy,
+                },
+              ],
+            }}
+            width={Dimension.DEVICE_WIDTH - 20} // from react-native
+            height={220}
+            yAxisInterval={1} // optional, defaults to 1
+            chartConfig={{
+              backgroundColor: Colors.LIGHT_GREY,
+              backgroundGradientFrom: '#fb8c00',
+              backgroundGradientTo: '#ffa726',
+              decimalPlaces: 0, // optional, defaults to 2dp
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              style: {
+                borderRadius: 16,
               },
-            ],
-          }}
-          width={Dimension.DEVICE_WIDTH - 20} // from react-native
-          height={220}
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: Colors.LIGHT_GREY,
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-          }}
-        />
+              propsForDots: {
+                r: '6',
+                strokeWidth: '2',
+                stroke: '#ffa726',
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+            }}
+          />
+        ) : null}
+
         <Text
           style={{
             textAlign: 'center',
@@ -217,10 +226,9 @@ class ReportContainer extends Component {
   };
 
   render() {
-    const {navigate, chart, myorders, user} = this.props;
+    const {chart, user} = this.props;
     let data_satu = [];
     let data_dua = [];
-    let chartAdmin = [];
     let ewarongdata = [];
     let penjualandata = [];
 
@@ -238,11 +246,11 @@ class ReportContainer extends Component {
     } else {
       if (chart) {
         const {ewarongs, penjualan} = chart;
-        ewarongdata = ewarongs;
-        penjualandata = penjualan;
+        ewarongdata = ewarongs ? ewarongs : [];
+        penjualandata = penjualan ? penjualan : [];
       }
     }
-
+    console.log('ewarongdata', ewarongdata);
     return (
       <View
         style={{
@@ -250,10 +258,10 @@ class ReportContainer extends Component {
           padding: 10,
           width: Dimension.DEVICE_WIDTH,
         }}>
-        {user.access_type != 'admin'
+        {user.access_type != 'admin' && data_satu.length > 0
           ? this.cartForUserAndRpk(data_satu, data_dua)
           : null}
-        {user.access_type == 'admin'
+        {user.access_type == 'admin' && Object.keys(ewarongdata).length > 0
           ? this.cartForAdmin(ewarongdata, penjualandata)
           : null}
       </View>

@@ -225,7 +225,7 @@ class MenuDrawer extends Component {
                   styles.bottomLinks,
                   {borderTopColor: 'lightgray', borderTopWidth: 1},
                 ]}>
-                {this.navLink('ReportScreen', 'Report Penjualan', 'area-chart')}
+                {this.navLink('ReportScreen', 'Report Belanja', 'area-chart')}
               </View>
             ) : null
           ) : null}

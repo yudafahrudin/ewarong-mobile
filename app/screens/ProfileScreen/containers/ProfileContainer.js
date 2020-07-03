@@ -27,10 +27,15 @@ class ProfileContainer extends Component {
 
   async componentDidMount() {}
 
-  logoutSession() {
-    const {actions} = this.props;
-    actions.logout();
-    this.navigateScreen('AuthLoading');
+  navigateScreen = (screen) => {
+    const {navigation} = this.props;
+    navigation.navigate(screen);
+  };
+
+  async logoutSession() {
+    const {actions, navigate} = this.props;
+    await actions.logout();
+    await navigate('AuthLoading');
   }
 
   render() {
@@ -73,18 +78,25 @@ class ProfileContainer extends Component {
               )
             ) : null}
           </View>
-          <Text style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>
-            {user.name}{' '}
-          </Text>
-          <Text style={{alignSelf: 'center', marginVertical: 10, fontSize: 15}}>
-            {user.email}{' '}
-          </Text>
-          <Text style={{alignSelf: 'center', fontSize: 15}}>
-            Tanggal Join {user.date_register}{' '}
-          </Text>
-          <Text style={{alignSelf: 'center', fontSize: 13}}>
-            {user.address}{' '}
-          </Text>
+          {user ? (
+            <View>
+              <Text
+                style={{alignSelf: 'center', fontSize: 20, fontWeight: 'bold'}}>
+                {user.name}{' '}
+              </Text>
+              <Text
+                style={{alignSelf: 'center', marginVertical: 10, fontSize: 15}}>
+                {user.email}{' '}
+              </Text>
+              <Text style={{alignSelf: 'center', fontSize: 15}}>
+                Tanggal Join {user.date_register}{' '}
+              </Text>
+              <Text style={{alignSelf: 'center', fontSize: 13}}>
+                {user.address}{' '}
+              </Text>
+            </View>
+          ) : null}
+
           {/* <Button
             title={'EDIT'}
             onPress={() => navigate('HomeScreen')}
