@@ -11,5 +11,8 @@ export default {
   orders: '/api/orderuser',
   myorders: '/api/getorderbyuser',
   todaychartuser: '/api/todaychartuser',
+  adminreport: '/api/adminreport',
+  confirmorder: '/api/confirmorder',
+  confirmewarong: '/api/confirmewarong',
   profileImageUrl: '/user/profile/',
 };

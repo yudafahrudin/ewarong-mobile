@@ -11,7 +11,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ListItem, Text, Input, Button} from 'react-native-elements';
 import _ from 'lodash';
-import {orders, getEwarong} from '../../../actions/ewarong';
+import {
+  orders,
+  getEwarong,
+  getMyOrders,
+  confirmOrder,
+} from '../../../actions/ewarong';
 import Modal from 'react-native-modal';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
@@ -139,10 +144,17 @@ class OrderDetailContainer extends Component {
     );
   };
 
-  render() {
-    const {navigate, detailOrder} = this.props;
-    const {ewarong, orders, disabled, modalVisible} = this.state;
+  async confirmOrders(params) {
+    const {navigate, detailOrder, actions, user} = this.props;
+    await actions.confirmOrder(params);
+    await actions.getMyOrders();
+    navigate('OrderListScreen');
+  }
 
+  render() {
+    const {navigate, detailOrder, actions, user} = this.props;
+    const {ewarong, orders, disabled, modalVisible} = this.state;
+    console.log(this.props);
     return (
       <ScrollView
         style={{
@@ -198,31 +210,47 @@ class OrderDetailContainer extends Component {
           <Text style={{flex: 1}}>Status</Text>
           <Text style={{}}>{detailOrder.status} </Text>
         </View>
-        {/* <Button
-          title={'PESAN'}
-          onPress={() => this.orders()}
-          disabled={disabled}
-          buttonStyle={{
-            width: Dimension.DEVICE_WIDTH - 20,
-            margin: 10,
-          }}
-        /> */}
-        {/* <Button
-          title={'BATAL PESANAN'}
-          onPress={() => navigate('HomeScreen')}
-          disabled={disabled}
-          buttonStyle={{
-            backgroundColor: Colors.RED,
-            width: Dimension.DEVICE_WIDTH - 20,
-            margin: 10,
-            marginTop: 0,
-          }}
-        /> */}
+        {user.access_type == 'rpk' && detailOrder.status == 'OPEN' ? (
+          <View>
+            <Button
+              title={'KONFIRMASI'}
+              onPress={() =>
+                this.confirmOrders({
+                  pemesanan_id: detailOrder.id,
+                  status: 'CONFIRM',
+                })
+              }
+              disabled={disabled}
+              buttonStyle={{
+                width: Dimension.DEVICE_WIDTH - 20,
+                margin: 10,
+                marginTop: 0,
+              }}
+            />
+            <Button
+              title={'REJECT'}
+              onPress={() =>
+                this.confirmOrders({
+                  pemesanan_id: detailOrder.id,
+                  status: 'REJECTED',
+                })
+              }
+              disabled={disabled}
+              buttonStyle={{
+                backgroundColor: Colors.RED,
+                width: Dimension.DEVICE_WIDTH - 20,
+                margin: 10,
+                marginTop: 0,
+              }}
+            />
+          </View>
+        ) : null}
         <Button
           title={'KEMBALI KE HOME'}
           onPress={() => navigate('HomeScreen')}
           disabled={disabled}
           buttonStyle={{
+            backgroundColor: Colors.ORANGE,
             width: Dimension.DEVICE_WIDTH - 20,
             margin: 10,
             marginTop: 0,
@@ -233,12 +261,16 @@ class OrderDetailContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  user: state.session.user,
+});
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       orders,
       getEwarong,
+      getMyOrders,
+      confirmOrder,
     },
     dispatch,
   ),

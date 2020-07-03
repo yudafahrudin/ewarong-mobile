@@ -8,6 +8,7 @@ import OrderListScreen from '../screens/OrderListScreen';
 import OrderDetailScreen from '../screens/OrderDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import ReportScreen from '../screens/ReportScreen';
+import EwarongListScreen from '../screens/EwarongListScreen';
 import Colors from '../constants/colors';
 
 export default createStackNavigator(
@@ -21,6 +22,7 @@ export default createStackNavigator(
     OrderDetailScreen,
     ProfileScreen,
     ReportScreen,
+    EwarongListScreen,
   },
   {
     initialRouteName: 'HomeScreen',

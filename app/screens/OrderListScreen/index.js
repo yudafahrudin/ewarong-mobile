@@ -4,13 +4,16 @@ import _ from 'lodash';
 import OrderListContainer from './containers/OrderListContainer';
 
 class OrderListScreen extends Component {
-  static navigationOptions = ({navigation}) => ({
-    title: `PESANANKU`,
-    headerStyle: {
-      backgroundColor: '#FD6A00',
-    },
-    headerTintColor: '#fff',
-  });
+  static navigationOptions = ({navigation}) =>  {
+    console.log('navigation',navigation)
+    return({
+      title: navigation.getParam('header'),
+      headerStyle: {
+        backgroundColor: '#FD6A00',
+      },
+      headerTintColor: '#fff',
+    })
+  };
 
   navigateTo = (screen, param) => {
     this.props.navigation.navigate(screen, param);

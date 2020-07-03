@@ -12,7 +12,7 @@ import {
 } from '../constants/actionTypes';
 import {Alert} from 'react-native';
 
-export const getEwarong = () => (dispatch, getState) => {
+export const getEwarong = (isAll = false) => (dispatch, getState) => {
   const params = {};
   const {filters} = getState().ewarong;
 
@@ -39,6 +39,12 @@ export const getEwarong = () => (dispatch, getState) => {
         params['district_id'] = filters.districtfilter;
       }
     }
+  }
+
+  if (isAll) {
+    params['isAll'] = true;
+  } else {
+    params['isAll'] = false;
   }
 
   return api(getState, dispatch, EndPoints.ewarong, 'get', params).then(
@@ -123,12 +129,31 @@ export const getMyOrders = () => (dispatch, getState) => {
   });
 };
 
-export const getMyCart = () => (dispatch, getState) => {
-  return api(getState, dispatch, EndPoints.todaychartuser).then((response) => {
+export const getMyCart = (isAdmin = false) => (dispatch, getState) => {
+  const endPoint = isAdmin ? EndPoints.adminreport : EndPoints.todaychartuser;
+  console.log(endPoint);
+  return api(getState, dispatch, endPoint).then((response) => {
     const {data} = response;
     dispatch({
       type: EWARONG_CART,
       payload: data.data,
     });
   });
+};
+
+export const confirmOrder = (params) => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.confirmorder, 'post', params).then(
+    (response) => {
+      const {data} = response;
+      Alert.alert('Berhasil', 'Berhasil mengupdate pesanan');
+    },
+  );
+};
+export const confirmEwarong = (params) => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.confirmewarong, 'post', params).then(
+    (response) => {
+      const {data} = response;
+      Alert.alert('Berhasil', 'Berhasil mengupdate ewarong');
+    },
+  );
 };

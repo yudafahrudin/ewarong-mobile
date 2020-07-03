@@ -5,7 +5,7 @@ import ReportContainer from './containers/ReportContainer';
 
 class ReportScreen extends Component {
   static navigationOptions = ({navigation}) => ({
-    title: `REPORT BELANJA`,
+    title: navigation.getParam('header'),
     headerStyle: {
       backgroundColor: '#FD6A00',
     },

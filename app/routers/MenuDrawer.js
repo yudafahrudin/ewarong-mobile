@@ -83,7 +83,7 @@ class MenuDrawer extends Component {
     return (
       <TouchableOpacity
         style={{padding: 20, flexDirection: 'row'}}
-        onPress={() => this.props.navigation.navigate(nav)}>
+        onPress={() => this.props.navigation.navigate(nav, {header: text})}>
         <Icon name={icon} size={25} color="black" />
         <Text style={styles.link}>{text}</Text>
       </TouchableOpacity>
@@ -134,7 +134,7 @@ class MenuDrawer extends Component {
                   {user ? (
                     <Text
                       onPress={() =>
-                        this.props.navigation.navigate('EditAccountScreen')
+                        this.props.navigation.navigate('ProfileScreen')
                       }
                       style={styles.editProfile}>
                       Edit Profile
@@ -192,21 +192,43 @@ class MenuDrawer extends Component {
                   styles.bottomLinks,
                   {borderTopColor: 'lightgray', borderTopWidth: 1},
                 ]}>
-                {this.navLink(
-                  'OrderListScreen',
-                  'Survei Kios',
-                  'shopping-basket',
-                )}
+                {this.navLink('EwarongListScreen', 'Survei Ewarong', 'map')}
               </View>
             ) : null
           ) : null}
-          <View
-            style={[
-              styles.bottomLinks,
-              {borderTopColor: 'lightgray', borderTopWidth: 1},
-            ]}>
-            {this.navLink('ReportScreen', 'Report', 'area-chart')}
-          </View>
+          {user ? (
+            user.access_type == 'admin' || user.access_type == 'superadmin' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink('ReportScreen', 'Report Ewarong', 'area-chart')}
+              </View>
+            ) : null
+          ) : null}
+          {user ? (
+            user.access_type == 'rpk' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink('ReportScreen', 'Report Penjualan', 'area-chart')}
+              </View>
+            ) : null
+          ) : null}
+          {user ? (
+            user.access_type == 'umum' || user.access_type == 'superadmin' ? (
+              <View
+                style={[
+                  styles.bottomLinks,
+                  {borderTopColor: 'lightgray', borderTopWidth: 1},
+                ]}>
+                {this.navLink('ReportScreen', 'Report Penjualan', 'area-chart')}
+              </View>
+            ) : null
+          ) : null}
           <View
             style={[
               styles.bottomLinks,
