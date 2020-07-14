@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ListItem, Text, Input, Button} from 'react-native-elements';
 import _ from 'lodash';
+import moment from 'moment';
 import {
   orders,
   getEwarong,
@@ -100,7 +101,6 @@ class OrderDetailContainer extends Component {
 
   renderItem = (props) => {
     const {item} = props;
-    const {orders} = this.state;
     console.log(item);
     return (
       <ListItem
@@ -109,32 +109,9 @@ class OrderDetailContainer extends Component {
         subtitle={
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
-              <Text>{item.item.deskripsi}</Text>
-              <Text>Stock {item.qty}</Text>
-              <Text>Harga {item.harga}</Text>
-            </View>
-            <View style={{flex: 1, alignItems: 'flex-end'}}>
-              <Input
-                placeholder="qty"
-                autoCapitalize="none"
-                keyboardType="numeric"
-                keyboardAppearance="light"
-                autoFocus={false}
-                autoCorrect={false}
-                defaultValue={orders[item.id] ? orders[item.id]['qty'] : null}
-                returnKeyType="done"
-                onChangeText={(val) => this.onChangeQTY(val, item)}
-              />
-            </View>
-            <View
-              style={{
-                flex: 2,
-                justifyContent: 'center',
-                alignItems: 'flex-end',
-              }}>
-              <Text style={{fontSize: 17}}>
-                {orders[item.id] ? orders[item.id]['harga'] : 0}
-              </Text>
+              <Text>Total : {item.qty}</Text>
+              <Text>Satuan : {item.satuan_number} </Text>
+              <Text>Harga : RP. {(item.harga / 1000).toFixed(3)}</Text>
             </View>
           </View>
         }
@@ -161,42 +138,30 @@ class OrderDetailContainer extends Component {
           flex: 1,
           width: Dimension.DEVICE_WIDTH,
         }}>
-        {/* <Modal isVisible={modalVisible} style={{justifyContent: 'center'}}>
-          <View
-            style={{
-              alignSelf: 'center',
-              padding: 10,
-              width: 150,
-              height: 80,
-              borderRadius: 10,
-              backgroundColor: '#FFFFFF',
-            }}>
-            <ActivityIndicator size="large" color="black" />
-            <Text>Tunggu sebentar</Text>
-          </View>
-        </Modal> */}
-
-        {/* {ewarong ? (
-          <View>
-            <FlatList
-              keyExtractor={this.keyExtractor}
-              dataOrders={orders}
-              data={ewarong.stock}
-              renderItem={this.renderItem}
-            />
-          </View>
-        ) : null} */}
         <View style={{flexDirection: 'row', margin: 20}}>
           <Text style={{flex: 1}}>Nomor Pesanan </Text>
           <Text style={{}}>{detailOrder.nomor_pemesanan} </Text>
         </View>
         <View style={{flexDirection: 'row', margin: 20}}>
           <Text style={{flex: 1}}>Tanggal </Text>
-          <Text style={{}}>{detailOrder.date_pemesanan} </Text>
+          <Text style={{}}>
+            {moment(detailOrder.created_at)
+              .add(7, 'hours')
+              .format('DD-MM-YYYY hh:mm')}
+          </Text>
         </View>
-        <View style={{flexDirection: 'row', margin: 20}}>
-          <Text style={{flex: 1}}>Kios </Text>
-          <Text style={{}}>{detailOrder.ewarong.nama_kios} </Text>
+        <View style={{margin: 20}}>
+          {user.access_type == 'rpk' ? (
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{flex: 1}}>Kios </Text>
+              <Text style={{}}>{detailOrder.ewarong.nama_kios} </Text>
+            </View>
+          ) : (
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{flex: 1}}>Pembeli </Text>
+              <Text style={{}}>{user.name} </Text>
+            </View>
+          )}
         </View>
         <View style={{flexDirection: 'row', margin: 20}}>
           <Text style={{flex: 1}}>Total Qty </Text>
@@ -204,14 +169,102 @@ class OrderDetailContainer extends Component {
         </View>
         <View style={{flexDirection: 'row', margin: 20}}>
           <Text style={{flex: 1}}>Harga Total</Text>
-          <Text style={{}}>{detailOrder.harga_total} </Text>
+          <Text style={{}}>
+            RP. {(detailOrder.harga_total / 1000).toFixed(3)}{' '}
+          </Text>
         </View>
         <View style={{flexDirection: 'row', margin: 20}}>
           <Text style={{flex: 1}}>Status</Text>
-          <Text style={{}}>{detailOrder.status} </Text>
+          {detailOrder.status != 'FINISH' &&
+          detailOrder.status != 'REJECTED' ? (
+            moment().diff(detailOrder.created_at, 'hours') - 7 > 4 ? (
+              <View>
+                <Text>EXPIRED</Text>
+              </View>
+            ) : (
+              <View>
+                <Text>{detailOrder.status} </Text>
+              </View>
+            )
+          ) : (
+            <View>
+              <Text>{detailOrder.status} </Text>
+            </View>
+          )}
         </View>
-        {user.access_type == 'rpk' && detailOrder.status == 'OPEN' ? (
+        <FlatList
+          keyExtractor={this.keyExtractor}
+          dataOrders={orders}
+          data={detailOrder.detail}
+          renderItem={this.renderItem}
+        />
+        {detailOrder.status != 'REJECTED' &&
+        detailOrder.status != 'FINISH' &&
+        user.access_type == 'umum' ? (
+          <View style={{padding: 20}}>
+            {moment().diff(detailOrder.created_at, 'hours') - 7 > 4 ? (
+              <Text style={{fontSize: 20, textAlign: 'center'}}>
+                Pesanan Kadaluarsa
+              </Text>
+            ) : (
+              <View>
+                <Text style={{fontSize: 18, textAlign: 'center'}}>
+                  Harap mengambil pesanan sebelum jam
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    color: Colors.RED,
+                  }}>
+                  {moment(detailOrder.created_at)
+                    .add(11, 'hours')
+                    .format('DD-MM-YYYY hh:mm:ss')}
+                </Text>
+              </View>
+            )}
+          </View>
+        ) : null}
+
+        {user.access_type == 'rpk' && detailOrder.status == 'CONFIRM' ? (
           <View>
+            <Button
+              title={'FINISH'}
+              onPress={() =>
+                this.confirmOrders({
+                  pemesanan_id: detailOrder.id,
+                  status: 'FINISH',
+                })
+              }
+              disabled={disabled}
+              buttonStyle={{
+                width: Dimension.DEVICE_WIDTH - 20,
+                margin: 10,
+                marginTop: 0,
+              }}
+            />
+          </View>
+        ) : null}
+        {user.access_type == 'rpk' &&
+        detailOrder.status == 'OPEN' &&
+        moment().diff(detailOrder.created_at, 'hours') - 7 <= 4 ? (
+          <View>
+            <Button
+              title={'FINISH'}
+              onPress={() =>
+                this.confirmOrders({
+                  pemesanan_id: detailOrder.id,
+                  status: 'FINISH',
+                })
+              }
+              disabled={disabled}
+              buttonStyle={{
+                width: Dimension.DEVICE_WIDTH - 20,
+                margin: 10,
+                marginTop: 0,
+              }}
+            />
             <Button
               title={'KONFIRMASI'}
               onPress={() =>

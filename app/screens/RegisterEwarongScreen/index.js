@@ -55,7 +55,9 @@ class RegisterEwarongScreen extends Component {
     latitude: '',
     longitude: '',
     showDate: false,
+    closeDate: false,
     timeShow: null,
+    timeClose: null,
     telp: null,
     district_id: -1,
     edistrict_id: -1,
@@ -117,6 +119,7 @@ class RegisterEwarongScreen extends Component {
       nama_kios,
       latitude,
       longitude,
+      timeClose,
       timeShow,
       lokasi,
       edistrict_id,
@@ -160,6 +163,7 @@ class RegisterEwarongScreen extends Component {
       district_id &&
       evillage_id &&
       village_id &&
+      timeClose &&
       timeShow &&
       type == 'rpk'
     ) {
@@ -180,6 +184,7 @@ class RegisterEwarongScreen extends Component {
         nama_kios,
         latitude,
         longitude,
+        timeClose,
         timeShow,
         lokasi,
         edistrict_id,
@@ -199,6 +204,7 @@ class RegisterEwarongScreen extends Component {
           telp,
           latitude,
           longitude,
+          jam_tutup: timeClose,
           jam_buka: timeShow,
           lokasi,
           edistrict_id,
@@ -311,6 +317,13 @@ class RegisterEwarongScreen extends Component {
     });
   }
 
+  showTimepickerClose() {
+    const {closeDate} = this.state;
+    this.setState({
+      closeDate: !closeDate,
+    });
+  }
+
   onChangeTime(value) {
     const {showDate} = this.state;
     if (value.type == 'set') {
@@ -321,6 +334,19 @@ class RegisterEwarongScreen extends Component {
     }
     this.setState({
       showDate: !showDate,
+    });
+  }
+
+  onChangeTimeClose(value) {
+    const {closeDate} = this.state;
+    if (value.type == 'set') {
+      this.setState({
+        timeClose: moment(value.nativeEvent.timestamp).format('HH:mm'),
+        closeDate: !closeDate,
+      });
+    }
+    this.setState({
+      closeDate: !closeDate,
     });
   }
 
@@ -354,13 +380,19 @@ class RegisterEwarongScreen extends Component {
     this.setState({evillage_id: itemValue});
   };
 
+  sortByname = (obj) => {
+    return obj ? obj.sort((a, b) => (a.name > b.name ? 1 : -1)) : null;
+  };
+
   render() {
     const {
       disabled,
       latitude,
       longitude,
       timeShow,
+      timeClose,
       showDate,
+      closeDate,
       district_id,
       edistrict_id,
       village_id,
@@ -371,11 +403,10 @@ class RegisterEwarongScreen extends Component {
       evillagesUses,
     } = this.state;
 
-    const district_conv = districts ? districts : [];
-    const edistrict_conv = edistricts ? edistricts : [];
-    const village_conv = villagesUses ? villagesUses : [];
-    const evillage_conv = evillagesUses ? evillagesUses : [];
-
+    const district_conv = districts ? this.sortByname(districts) : [];
+    const edistrict_conv = edistricts ? this.sortByname(edistricts) : [];
+    const village_conv = villagesUses ? this.sortByname(villagesUses) : [];
+    const evillage_conv = evillagesUses ? this.sortByname(evillagesUses) : [];
     return (
       <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.WHITE}}>
         <StatusBar backgroundColor={Colors.BLACK} />
@@ -457,7 +488,7 @@ class RegisterEwarongScreen extends Component {
                   })}
                 </Picker>
               ) : null}
-              {village_conv.length > 0 ? (
+              {village_conv.length > 0 && district_id != -1 ? (
                 <Picker
                   selectedValue={village_id}
                   enabled={village_conv.length === 0 ? false : true}
@@ -532,7 +563,7 @@ class RegisterEwarongScreen extends Component {
                   })}
                 </Picker>
               ) : null}
-              {evillage_conv.length > 0 ? (
+              {evillage_conv.length > 0 && edistrict_id != -1 ? (
                 <Picker
                   selectedValue={evillage_id}
                   enabled={evillage_conv.length === 0 ? false : true}
@@ -589,6 +620,24 @@ class RegisterEwarongScreen extends Component {
                   title="Buka Jam"
                 />
               </View>
+              <View style={{flexDirection: 'row', padding: 10}}>
+                <Text
+                  style={{
+                    padding: 10,
+                    borderWidth: 0,
+                    marginRight: 20,
+                    color: Colors.DARK_GREY,
+                  }}>
+                  {timeClose ? timeClose : 'Pilih Jam Tutup'}
+                </Text>
+                <Button
+                  buttonStyle={{
+                    width: 100,
+                  }}
+                  onPress={() => this.showTimepickerClose()}
+                  title="Tutup Jam"
+                />
+              </View>
               {showDate ? (
                 <DateTimePicker
                   testID="dateTimePicker"
@@ -597,6 +646,16 @@ class RegisterEwarongScreen extends Component {
                   is24Hour={true}
                   display="default"
                   onChange={(val) => this.onChangeTime(val)}
+                />
+              ) : null}
+              {closeDate ? (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={new Date()}
+                  mode={'time'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={(val) => this.onChangeTimeClose(val)}
                 />
               ) : null}
 

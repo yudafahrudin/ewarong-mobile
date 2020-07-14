@@ -9,6 +9,7 @@ import {orders, getEwarong, getMyOrders} from '../../../actions/ewarong';
 import Modal from 'react-native-modal';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
+import moment from 'moment';
 
 class OrderListContainer extends Component {
   state = {
@@ -97,13 +98,31 @@ class OrderListContainer extends Component {
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
               <Text>Jumlah : {item.qty_total}</Text>
-              <Text>Harga : {item.harga_total}</Text>
+              <Text>Harga : RP. {(item.harga_total / 1000).toFixed(3)}</Text>
             </View>
             <View style={{flex: 2}}>
-              <Text>{item.date_pemesanan}</Text>
+              <Text>
+                {moment(item.created_at)
+                  .add(7, 'hours')
+                  .format('DD-MM-YYYY hh:mm:ss')}
+              </Text>
             </View>
             <View style={{flex: 1}}>
-              <Text>{item.status}</Text>
+              {item.status != 'REJECTED' && item.status != 'FINISH' ? (
+                moment().diff(item.created_at, 'hours') - 7 > 4 ? (
+                  <View>
+                    <Text>EXPIRED</Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text>{item.status}</Text>
+                  </View>
+                )
+              ) : (
+                <View>
+                  <Text>{item.status}</Text>
+                </View>
+              )}
             </View>
           </View>
         }
@@ -122,15 +141,33 @@ class OrderListContainer extends Component {
         titleStyle={{fontSize: 18, fontWeight: 'bold'}}
         subtitle={
           <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 2}}>
+            <View style={{flex: 3}}>
               <Text>Jumlah : {item.qty_total}</Text>
-              <Text>Harga : {item.harga_total}</Text>
+              <Text>Harga : RP. {(item.harga_total / 1000).toFixed(3)}</Text>
             </View>
             <View style={{flex: 2}}>
-              <Text>{item.created_at}</Text>
+              <Text>
+                {moment(item.created_at)
+                  .add(7, 'hours')
+                  .format('DD-MM-YYYY hh:mm:ss')}
+              </Text>
             </View>
             <View style={{flex: 1}}>
-              <Text>{item.status}</Text>
+              {item.status != 'REJECTED' && item.status != 'FINISH' ? (
+                moment().diff(item.created_at, 'hours') - 7 > 4 ? (
+                  <View>
+                    <Text>EXPIRED</Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text>{item.status}</Text>
+                  </View>
+                )
+              ) : (
+                <View>
+                  <Text>{item.status}</Text>
+                </View>
+              )}
             </View>
           </View>
         }
@@ -145,9 +182,19 @@ class OrderListContainer extends Component {
     setTimeout(() => navigate('OrderDetailScreen', {detailOrder: item}), 0);
   };
 
+  sortByTime = (obj) => {
+    obj.sort(function (a, b) {
+      return moment(b.created_at) - moment(a.created_at);
+    });
+  };
+
   render() {
     const {navigate, myorders, user} = this.props;
     const {ewarong, orders, disabled, modalVisible} = this.state;
+
+    // Sorted date manualy
+    this.sortByTime(myorders);
+
     return (
       <View
         style={{
@@ -174,7 +221,6 @@ class OrderListContainer extends Component {
             {user.access_type == 'umum' ? (
               <FlatList
                 keyExtractor={this.keyExtractor}
-                dataOrders={orders}
                 data={Object.values(myorders)}
                 renderItem={this.renderItem}
               />
@@ -182,7 +228,6 @@ class OrderListContainer extends Component {
             {user.access_type == 'rpk' ? (
               <FlatList
                 keyExtractor={this.keyExtractor}
-                dataOrders={orders}
                 data={Object.values(myorders)}
                 renderItem={this.renderItemRpk}
               />

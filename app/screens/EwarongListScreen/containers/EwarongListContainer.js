@@ -13,7 +13,6 @@ import {bindActionCreators} from 'redux';
 import {ListItem, Text, Badge, Button} from 'react-native-elements';
 import _ from 'lodash';
 import {orders, getEwarong, confirmEwarong} from '../../../actions/ewarong';
-import Modal from 'react-native-modal';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
 import {TabView} from 'react-native-tab-view';

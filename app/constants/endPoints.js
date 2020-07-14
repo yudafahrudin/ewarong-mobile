@@ -13,6 +13,9 @@ export default {
   todaychartuser: '/api/todaychartuser',
   adminreport: '/api/adminreport',
   confirmorder: '/api/confirmorder',
+  finishorder: '/api/finishorder',
+  rejectedorder: '/api/rejectedorder',
   confirmewarong: '/api/confirmewarong',
   profileImageUrl: '/user/profile/',
+  updateProfile: '/api/updateprofile',
 };

@@ -22,6 +22,7 @@ const initialState = {
   myorders: [],
   cart: [],
   filters: {
+    timefilterClose: null,
     timefilter: null,
     itemfilter: [],
     latitude: null,

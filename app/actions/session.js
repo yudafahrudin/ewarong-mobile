@@ -19,7 +19,6 @@ export const login = (username, password, navigateSucces) => (
   return api(getState, dispatch, EndPoints.login, 'post', params).then(
     (response) => {
       const {data} = response;
-      console.log(data);
       const {message} = data;
       if (message) {
       } else {
@@ -83,6 +82,22 @@ export const register = (
     .catch((err) => {
       Alert.alert('Error', JSON.stringify(err));
     });
+};
+
+export const updateprofile = (data) => (dispatch, getState) => {
+  return api(getState, dispatch, EndPoints.updateProfile, 'post', data).then(
+    (response) => {
+      const {data} = response;
+      console.log(data);
+      dispatch({
+        type: USER,
+        payload: {
+          user: data.data.user,
+          token: data.data.token,
+        },
+      });
+    },
+  );
 };
 
 export const logout = () => ({

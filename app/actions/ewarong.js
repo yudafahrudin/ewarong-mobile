@@ -23,6 +23,9 @@ export const getEwarong = (isAll = false) => (dispatch, getState) => {
     if (filters.timefilter) {
       params['time'] = filters.timefilter;
     }
+    if (filters.timefilterClose) {
+      params['time_close'] = filters.timefilterClose;
+    }
     if (filters.itemfilter.length) {
       params['items'] = filters.itemfilter;
     }
@@ -43,9 +46,9 @@ export const getEwarong = (isAll = false) => (dispatch, getState) => {
 
   if (isAll) {
     params['isAll'] = true;
-  } else {
-    params['isAll'] = false;
   }
+
+  console.log('params', params);
 
   return api(getState, dispatch, EndPoints.ewarong, 'get', params).then(
     (response) => {
@@ -54,6 +57,21 @@ export const getEwarong = (isAll = false) => (dispatch, getState) => {
         type: EWARONG,
         payload: data.data,
       });
+    },
+  );
+};
+
+export const searchEwarong = (searchname) => (dispatch, getState) => {
+  const params = {};
+
+  if (searchname) {
+    params['searchname'] = searchname;
+  }
+
+  return api(getState, dispatch, EndPoints.ewarong, 'get', params).then(
+    (response) => {
+      const {data} = response;
+      return data;
     },
   );
 };
@@ -141,14 +159,28 @@ export const getMyCart = (isAdmin = false) => (dispatch, getState) => {
   });
 };
 
-export const confirmOrder = (params) => (dispatch, getState) => {
-  return api(getState, dispatch, EndPoints.confirmorder, 'post', params).then(
+export const confirmOrder = (params, status = 'CONFIRM') => (
+  dispatch,
+  getState,
+) => {
+  let endpointtype = EndPoints.confirmorder;
+
+  if (status == 'FINISH') {
+    endpointtype = EndPoints.finishorder;
+  }
+
+  if (status == 'REJECTED') {
+    endpointtype = EndPoints.rejectedorder;
+  }
+
+  return api(getState, dispatch, endpointtype, 'post', params).then(
     (response) => {
       const {data} = response;
       Alert.alert('Berhasil', 'Berhasil mengupdate pesanan');
     },
   );
 };
+
 export const confirmEwarong = (params) => (dispatch, getState) => {
   return api(getState, dispatch, EndPoints.confirmewarong, 'post', params).then(
     (response) => {

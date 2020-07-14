@@ -152,6 +152,10 @@ class HomeContainer extends Component {
       console.log('masuk 2');
       total = total + 1;
     }
+    if (filters.timefilterClose) {
+      console.log('masuk 3');
+      total = total + 1;
+    }
     console.log(total);
     return total;
   }
@@ -320,8 +324,8 @@ class HomeContainer extends Component {
                     {stock.map((val, key) => {
                       return (
                         <Text key={key}>
-                          {val.item.nama} - stock : {val.qty} - harga :{' '}
-                          {val.harga}
+                          {val.item.nama} - stock : {val.qty} - harga : Rp.{' '}
+                          {(val.harga / 1000).toFixed(3)}
                         </Text>
                       );
                     })}
@@ -346,7 +350,6 @@ class HomeContainer extends Component {
                         color: Colors.TEXT_BLACK,
                       }}
                       buttonStyle={{
-                        marginBottom: 1,
                         backgroundColor: Colors.LIGHT_GREY,
                         width: Dimension.DEVICE_WIDTH - 38,
                       }}
@@ -533,7 +536,7 @@ class HomeContainer extends Component {
               }}>
               <Slider
                 minimumValue={1}
-                maximumValue={10}
+                maximumValue={200}
                 value={rangekm}
                 onValueChange={(value) => {
                   this.setState({rangekm: Math.round(value)});

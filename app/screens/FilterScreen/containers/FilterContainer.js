@@ -15,7 +15,9 @@ class FilterContainer extends Component {
   state = {
     checked: [],
     showDate: false,
+    showDateClose: false,
     timeShow: null,
+    timeClose: null,
   };
 
   async componentDidMount() {
@@ -28,6 +30,11 @@ class FilterContainer extends Component {
     if (filters.timefilter) {
       this.setState({
         timeShow: filters.timefilter,
+      });
+    }
+    if (filters.timefilterClose) {
+      this.setState({
+        timeClose: filters.timefilterClose,
       });
     }
     await actions.getAllItems();
@@ -55,6 +62,13 @@ class FilterContainer extends Component {
     });
   }
 
+  showTimepickerClose() {
+    const {showDateClose} = this.state;
+    this.setState({
+      showDateClose: !showDateClose,
+    });
+  }
+
   onChange(value) {
     const {showDate} = this.state;
     if (value.type == 'set') {
@@ -68,11 +82,25 @@ class FilterContainer extends Component {
     });
   }
 
+  onChangeClose(value) {
+    const {showDateClose} = this.state;
+    if (value.type == 'set') {
+      this.setState({
+        timeClose: moment(value.nativeEvent.timestamp).format('HH:mm'),
+        showDateClose: !showDateClose,
+      });
+    }
+    this.setState({
+      showDateClose: !showDateClose,
+    });
+  }
+
   async setParameters() {
-    const {checked, timeShow} = this.state;
+    const {checked, timeShow, timeClose} = this.state;
     const {actions, navigate, filters} = this.props;
     actions.setParams({
       ...filters,
+      timefilterClose: timeClose ? timeClose : null,
       timefilter: timeShow ? timeShow : null,
       itemfilter: checked,
     });
@@ -84,6 +112,7 @@ class FilterContainer extends Component {
     const {actions, navigate, filters} = this.props;
     actions.setParams({
       ...filters,
+      timefilterClose: null,
       timefilter: null,
       itemfilter: [],
     });
@@ -93,7 +122,7 @@ class FilterContainer extends Component {
 
   render() {
     const {allItems} = this.props;
-    const {checked, timeShow, showDate} = this.state;
+    const {checked, timeShow, timeClose, showDate, showDateClose} = this.state;
     console.log(this.state);
     return (
       <ScrollView style={{backgroundColor: '#ececec'}}>
@@ -117,6 +146,24 @@ class FilterContainer extends Component {
               title="Buka Jam"
             />
           </View>
+          <View style={{flexDirection: 'row', padding: 10}}>
+            <Text
+              style={{
+                padding: 10,
+                borderWidth: 0,
+                marginRight: 20,
+                color: Colors.DARK_GREY,
+              }}>
+              {timeClose ? timeClose : 'Pilih Jam Tutup'}
+            </Text>
+            <Button
+              buttonStyle={{
+                width: 100,
+              }}
+              onPress={() => this.showTimepickerClose()}
+              title="Tutup Jam"
+            />
+          </View>
           {showDate ? (
             <DateTimePicker
               testID="dateTimePicker"
@@ -125,6 +172,16 @@ class FilterContainer extends Component {
               is24Hour={true}
               display="default"
               onChange={(val) => this.onChange(val)}
+            />
+          ) : null}
+          {showDateClose ? (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={new Date()}
+              mode={'time'}
+              is24Hour={true}
+              display="default"
+              onChange={(val) => this.onChangeClose(val)}
             />
           ) : null}
           {allItems

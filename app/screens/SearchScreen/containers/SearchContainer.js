@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
-import {View, ScrollView, Text, Alert} from 'react-native';
+import {View, ScrollView, Text, Alert, TouchableOpacity} from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {Button, Icon, Input} from 'react-native-elements';
 import _ from 'lodash';
-import {getAllDistricts, setParams, getEwarong} from '../../../actions/ewarong';
+import {
+  getAllDistricts,
+  setParams,
+  getEwarong,
+  searchEwarong,
+} from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
 
@@ -15,6 +20,9 @@ class SearchContainer extends Component {
     searchname: null,
     district_id: null,
     village_id: null,
+    villagesUses: [],
+    resultSearch: [],
+    afterClick: false,
     index: 0,
     routes: [
       {key: 'first', title: 'Cari dengan Nama'},
@@ -25,12 +33,6 @@ class SearchContainer extends Component {
   async componentDidMount() {
     const {actions} = this.props;
     await actions.getAllDistricts();
-  }
-
-  setSelectedValueDistricts(value) {
-    this.setState({
-      district_id: value,
-    });
   }
 
   setSelectedValueVillages(value) {
@@ -61,11 +63,12 @@ class SearchContainer extends Component {
     await actions.getEwarong();
     navigate('HomeScreen');
   }
+
   async searchByDistrict() {
     const {village_id, district_id} = this.state;
     const {actions, navigate, filters} = this.props;
     if (village_id == null && district_id == null) {
-      Alert.alert('Pilih Lokasi', 'Pilih salah satu kecamatan atau dusun');
+      Alert.alert('Pilih Lokasi', 'Pilih salah satu kecamatan atau desa');
     } else {
       actions.setParams({
         ...filters,
@@ -99,29 +102,74 @@ class SearchContainer extends Component {
     navigate('HomeScreen');
   }
 
-  onSearchByName = (searchname) => {
+  onSearchByName = async (searchname) => {
+    const {actions} = this.props;
+    const data = await actions.searchEwarong(searchname);
     this.setState({
+      resultSearch: searchname ? data.data : [],
       searchname,
     });
   };
 
+  sortByname = (obj) => {
+    return obj ? obj.sort((a, b) => (a.name > b.name ? 1 : -1)) : null;
+  };
+
+  setSelectedValueDistricts = (itemValue) => {
+    const {villages} = this.props.alldistricts;
+    const villagess = Object.values(villages).filter((val) => {
+      if (Number(val.district_id) == Number(itemValue)) {
+        return val;
+      }
+    });
+    if (villagess.length > 0) {
+      this.setState({district_id: itemValue, villagesUses: villagess});
+    }
+  };
+
   firstRoute = () => {
     const {searchname} = this.props.filters;
+    const {resultSearch, afterClick} = this.state;
     return (
       <View style={{flex: 1}}>
         <Input
           placeholder="Cari Nama Ewarong"
           autoCapitalize="none"
           keyboardAppearance="light"
-          defaultValue={searchname}
+          defaultValue={this.state.searchname}
           autoFocus={false}
           autoCorrect={false}
           returnKeyType="next"
           onChangeText={(val) => this.onSearchByName(val)}
-          onSubmitEditing={() => {
-            this.name.focus();
+          ref={(input) => {
+            this.namesearch = input;
           }}
         />
+        {resultSearch.length ? (
+          resultSearch.map((val, key) => (
+            <TouchableOpacity
+              key={key}
+              onPress={() => {
+                this.setState({
+                  searchname: val.nama_kios,
+                  resultSearch: [],
+                  afterClick: true,
+                });
+              }}>
+              <Text style={{margin: 10, marginTop: 0}}>{val.nama_kios}</Text>
+            </TouchableOpacity>
+          ))
+        ) : this.state.searchname && !afterClick ? (
+          <Text
+            style={{
+              margin: 10,
+              width: Dimension.DEVICE_WIDTH,
+              textAlign: 'center',
+              marginTop: 0,
+            }}>
+            No result data
+          </Text>
+        ) : null}
         <Button
           title={'CARI'}
           onPress={() => this.searchByName()}
@@ -145,10 +193,15 @@ class SearchContainer extends Component {
   };
 
   secondRoute = () => {
-    const {district_id, village_id} = this.state;
+    const {district_id, village_id, villagesUses} = this.state;
     const {districts, villages} = this.props.alldistricts;
-    const district_conv = districts ? Object.values(districts) : [];
-    const villages_conv = villages ? Object.values(villages) : [];
+    const district_conv = districts
+      ? this.sortByname(Object.values(districts))
+      : [];
+    const villages_conv = villagesUses
+      ? this.sortByname(Object.values(villagesUses))
+      : [];
+
     return (
       <View style={{flex: 1, justifyContent: 'space-between'}}>
         {district_conv ? (
@@ -163,13 +216,13 @@ class SearchContainer extends Component {
             })}
           </Picker>
         ) : null}
-        {villages_conv ? (
+        {villages_conv && district_id ? (
           <Picker
             selectedValue={village_id}
             onValueChange={(itemValue, itemIndex) =>
               this.setSelectedValueVillages(itemValue)
             }>
-            <Picker.Item key={-1} label={'Pilih Dusun'} value={0} />
+            <Picker.Item key={-1} label={'Pilih Desa'} value={0} />
             {villages_conv.map((val, key) => {
               return <Picker.Item key={key} label={val.name} value={val.id} />;
             })}
@@ -214,8 +267,8 @@ class SearchContainer extends Component {
   };
 
   render() {
-    const {index, routes} = this.state;
-
+    const {index, routes, resultSearch} = this.state;
+    console.log(resultSearch);
     return (
       <ScrollView style={{backgroundColor: '#ececec'}}>
         <TabView
@@ -249,6 +302,7 @@ const mapDispatchToProps = (dispatch) => ({
     {
       getAllDistricts,
       setParams,
+      searchEwarong,
       getEwarong,
     },
     dispatch,

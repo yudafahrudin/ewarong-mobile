@@ -1,6 +1,12 @@
 /* eslint-disable import/named */
 import React, {Component} from 'react';
-import {View, FlatList, Alert, ActivityIndicator} from 'react-native';
+import {
+  View,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ListItem, Text, Input, Button} from 'react-native-elements';
@@ -14,6 +20,7 @@ class OrderContainer extends Component {
   state = {
     orders: [],
     modalVisible: false,
+    modalVisibleWait: false,
     ewarong: null,
     disabled: false,
   };
@@ -27,12 +34,14 @@ class OrderContainer extends Component {
 
   keyExtractor = (item, index) => index.toString();
 
-  onChangeQTY = (qty, item) => {
+  onChangeQTY = (qty, item, satuan_number, satuan_id) => {
     const {orders} = this.state;
     let dataOrder = [];
     if (qty <= item.qty) {
       dataOrder[item.id] = {
         id: item.item_id,
+        satuan_id: satuan_id,
+        satuan_number: satuan_number,
         qty,
         harga: qty * item.harga,
       };
@@ -45,6 +54,8 @@ class OrderContainer extends Component {
     } else {
       dataOrder[item.id] = {
         id: item.item_id,
+        satuan_id: 0,
+        satuan_number: 0,
         qty: 0,
         harga: 0,
       };
@@ -58,32 +69,40 @@ class OrderContainer extends Component {
     }
   };
 
-  async orders() {
+  async orders(isok = false) {
     const {ewarong, orders} = this.state;
     const {actions, navigate} = this.props;
-    console.log(Object.values(orders));
+    this.setState({
+      modalVisible: true,
+    });
     this.setState({
       disabled: true,
     });
-    if (orders.length == 0) {
-      this.setState({
-        disabled: false,
-      });
-      Alert.alert('Kosong', 'Anda belum memilih item');
-    } else {
-      await actions.orders(
-        {
-          ewarong_id: ewarong.id,
-          items: Object.values(orders),
-        },
-        async () => {
-          this.setState({
-            modalVisible: true,
-          });
-          await actions.getEwarong();
-          navigate('HomeScreen');
-        },
-      );
+
+    if (isok) {
+      if (orders.length == 0) {
+        this.setState({
+          disabled: false,
+        });
+        this.setState({
+          modalVisible: false,
+        });
+        Alert.alert('Kosong', 'Anda belum memilih item');
+      } else {
+        await actions.orders(
+          {
+            ewarong_id: ewarong.id,
+            items: Object.values(orders),
+          },
+          async () => {
+            this.setState({
+              modalVisibleWait: true,
+            });
+            await actions.getEwarong();
+            navigate('HomeScreen');
+          },
+        );
+      }
     }
   }
 
@@ -98,9 +117,9 @@ class OrderContainer extends Component {
         subtitle={
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
-              <Text>{item.item.deskripsi}</Text>
-              <Text>Stock {item.qty}</Text>
-              <Text>Harga {item.harga}</Text>
+              <Text>{`${item.satuan_number} ${item.satuan.nama}`}</Text>
+              <Text>Stock : {item.qty}</Text>
+              <Text>Harga : RP. {(item.harga / 1000).toFixed(3)}</Text>
             </View>
             <View style={{flex: 1, alignItems: 'flex-end'}}>
               <Input
@@ -112,7 +131,14 @@ class OrderContainer extends Component {
                 autoCorrect={false}
                 defaultValue={orders[item.id] ? orders[item.id]['qty'] : null}
                 returnKeyType="done"
-                onChangeText={(val) => this.onChangeQTY(val, item)}
+                onChangeText={(val) =>
+                  this.onChangeQTY(
+                    val,
+                    item,
+                    item.satuan_number,
+                    item.satuan.id,
+                  )
+                }
               />
             </View>
             <View
@@ -135,15 +161,56 @@ class OrderContainer extends Component {
 
   render() {
     const {navigate} = this.props;
-    const {ewarong, orders, disabled, modalVisible} = this.state;
-    console.log(ewarong);
+    const {
+      ewarong,
+      orders,
+      disabled,
+      modalVisible,
+      modalVisibleWait,
+    } = this.state;
+    console.log('orders', orders);
+    console.log('ewarong', ewarong);
     return (
-      <View
+      <ScrollView
         style={{
           flex: 1,
           width: Dimension.DEVICE_WIDTH,
         }}>
         <Modal isVisible={modalVisible} style={{justifyContent: 'center'}}>
+          <View
+            style={{
+              height: 150,
+              width: Dimension.DEVICE_WIDTH / 1.2,
+              alignSelf: 'center',
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: '#FFFFFF',
+            }}>
+            <Text style={{fontSize: 16, textAlign: 'center'}}>
+              Anda yakin mau melanjutkan pesanan ?
+            </Text>
+            <Button
+              title={'LANJUTKAN'}
+              onPress={() => this.orders(true)}
+              buttonStyle={{
+                margin: 10,
+              }}
+            />
+            <Button
+              title={'CANCEL'}
+              onPress={() =>
+                this.setState({modalVisible: false, disabled: false})
+              }
+              buttonStyle={{
+                backgroundColor: Colors.RED,
+                margin: 10,
+                marginTop: 0,
+              }}
+            />
+          </View>
+        </Modal>
+
+        <Modal isVisible={modalVisibleWait} style={{justifyContent: 'center'}}>
           <View
             style={{
               alignSelf: 'center',
@@ -188,7 +255,7 @@ class OrderContainer extends Component {
             marginTop: 0,
           }}
         />
-      </View>
+      </ScrollView>
     );
   }
 }

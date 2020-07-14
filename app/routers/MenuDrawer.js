@@ -234,6 +234,13 @@ class MenuDrawer extends Component {
               styles.bottomLinks,
               {borderTopColor: 'lightgray', borderTopWidth: 1},
             ]}>
+            {this.navLink('AboutScreen', 'Help', 'question-circle')}
+          </View>
+          <View
+            style={[
+              styles.bottomLinks,
+              {borderTopColor: 'lightgray', borderTopWidth: 1},
+            ]}>
             {this.navLink('AboutScreen', 'Tentang', 'info')}
           </View>
         </ScrollView>
