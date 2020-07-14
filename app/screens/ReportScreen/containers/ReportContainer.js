@@ -64,7 +64,6 @@ class ReportContainer extends Component {
         <Text style={{textAlign: 'center', fontSize: 18, marginBottom: 20}}>
           Report Bulan Ini
         </Text>
-
         <View>
           <LineChart
             data={{
@@ -83,7 +82,7 @@ class ReportContainer extends Component {
               backgroundColor: Colors.LIGHT_GREY,
               backgroundGradientFrom: '#fb8c00',
               backgroundGradientTo: '#ffa726',
-              decimalPlaces: 0, // optional, defaults to 2dp
+              decimalPlaces: 1, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               style: {
@@ -117,7 +116,7 @@ class ReportContainer extends Component {
               backgroundColor: Colors.LIGHT_GREY,
               backgroundGradientFrom: '#fb8c00',
               backgroundGradientTo: '#ffa726',
-              decimalPlaces: 0, // optional, defaults to 2dp
+              decimalPlaces: 1, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               style: {
@@ -250,7 +249,6 @@ class ReportContainer extends Component {
         penjualandata = penjualan ? penjualan : [];
       }
     }
-    console.log('ewarongdata', ewarongdata);
     return (
       <View
         style={{

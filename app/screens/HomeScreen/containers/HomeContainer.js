@@ -550,7 +550,7 @@ class HomeContainer extends Component {
               }}>
               <Slider
                 minimumValue={1}
-                maximumValue={10}
+                maximumValue={200}
                 value={rangekm}
                 onValueChange={(value) => {
                   this.setState({rangekm: Math.round(value)});

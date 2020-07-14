@@ -159,17 +159,14 @@ export const getMyCart = (isAdmin = false) => (dispatch, getState) => {
   });
 };
 
-export const confirmOrder = (params, status = 'CONFIRM') => (
-  dispatch,
-  getState,
-) => {
+export const confirmOrder = (params) => (dispatch, getState) => {
   let endpointtype = EndPoints.confirmorder;
 
-  if (status == 'FINISH') {
+  if (params.status == 'FINISH') {
     endpointtype = EndPoints.finishorder;
   }
 
-  if (status == 'REJECTED') {
+  if (params.status == 'REJECTED') {
     endpointtype = EndPoints.rejectedorder;
   }
 
