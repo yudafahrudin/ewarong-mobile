@@ -153,7 +153,7 @@ class OrderDetailContainer extends Component {
           </Text>
         </View>
         <View style={{margin: 20}}>
-          {user.access_type == 'rpk' ? (
+          {user.access_type == 'umum' ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={{flex: 1}}>Kios </Text>
               <Text style={{}}>{detailOrder.ewarong.nama_kios} </Text>

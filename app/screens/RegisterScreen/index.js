@@ -289,6 +289,9 @@ class RegisterScreen extends Component {
       showDate: !showDate,
     });
   }
+  sortByname = (obj) => {
+    return obj ? obj.sort((a, b) => (a.name > b.name ? 1 : -1)) : null;
+  };
   render() {
     const {
       disabled,
@@ -297,8 +300,8 @@ class RegisterScreen extends Component {
       districts,
       villagesUses,
     } = this.state;
-    const district_conv = districts ? districts : [];
-    const village_conv = villagesUses ? villagesUses : [];
+    const district_conv = districts ? this.sortByname(districts) : [];
+    const village_conv = villagesUses ? this.sortByname(villagesUses) : [];
 
     return (
       <KeyboardAvoidingView style={{flex: 1, backgroundColor: Colors.WHITE}}>

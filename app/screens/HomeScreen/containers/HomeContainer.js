@@ -168,6 +168,8 @@ class HomeContainer extends Component {
       .length;
     const totalExpired = pemesanan.filter((val) => val.status == 'EXPIRED')
       .length;
+    const totalFinish = pemesanan.filter((val) => val.status == 'FINISH')
+      .length;
 
     return (
       <View>
@@ -175,6 +177,7 @@ class HomeContainer extends Component {
         <Text>Total CONFIRM : {totalConfirm}</Text>
         <Text>Total REJECTED : {totalRejected}</Text>
         <Text>Total EXPIRED : {totalExpired}</Text>
+        <Text>Total FINISH : {totalFinish}</Text>
       </View>
     );
   }
@@ -198,6 +201,7 @@ class HomeContainer extends Component {
     let nama_kios = null;
     let lokasi = null;
     let jam_buka = null;
+    let jam_tutup = null;
     let telp = null;
     let pemesanan = [];
     let stock = [];
@@ -207,6 +211,7 @@ class HomeContainer extends Component {
       nama_kios = ewarongData.nama_kios;
       lokasi = ewarongData.lokasi;
       jam_buka = ewarongData.jam_buka;
+      jam_tutup = ewarongData.jam_tutup;
       telp = ewarongData.telp;
       pemesanan = ewarongData.pemesanan;
       stock = ewarongData.stock;
@@ -316,6 +321,9 @@ class HomeContainer extends Component {
                   </Text>
                   <Text>
                     Telp: {telp} Alamat: {lokasi}
+                  </Text>
+                  <Text>
+                    Jam buka: {jam_buka} Jam tutup: {jam_tutup}
                   </Text>
                   <View style={{marginTop: 20}}>
                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
