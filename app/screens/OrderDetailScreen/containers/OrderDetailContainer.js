@@ -110,7 +110,9 @@ class OrderDetailContainer extends Component {
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 2}}>
               <Text>Total : {item.qty}</Text>
-              <Text>Satuan : {item.satuan_number} </Text>
+              <Text>
+                Satuan : {item.satuan_number} {item.satuan.nama}{' '}
+              </Text>
               <Text>Harga : RP. {(item.harga / 1000).toFixed(3)}</Text>
             </View>
           </View>
@@ -131,7 +133,7 @@ class OrderDetailContainer extends Component {
   render() {
     const {navigate, detailOrder, actions, user} = this.props;
     const {ewarong, orders, disabled, modalVisible} = this.state;
-    console.log(this.props);
+    console.log('detailOrder', detailOrder);
     return (
       <ScrollView
         style={{

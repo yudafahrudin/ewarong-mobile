@@ -310,7 +310,7 @@ class HomeContainer extends Component {
                   padding: 10,
                   backgroundColor: '#FFFFFF',
                 }}>
-                <ScrollView>
+                <ScrollView style={{flex: 1, marginBottom: 130}}>
                   <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                     {nama_kios}
                   </Text>
@@ -323,10 +323,16 @@ class HomeContainer extends Component {
                     </Text>
                     {stock.map((val, key) => {
                       return (
-                        <Text key={key}>
-                          {val.item.nama} - stock : {val.qty} - harga : Rp.{' '}
-                          {(val.harga / 1000).toFixed(3)}
-                        </Text>
+                        <View key={key} style={{marginBottom: 20}}>
+                          <Text>{val.item.nama}</Text>
+                          <Text>- stock : {val.qty}</Text>
+                          <Text>
+                            - satuan : {val.satuan_number} {val.satuan.nama}
+                          </Text>
+                          <Text>
+                            - harga : Rp. {(val.harga / 1000).toFixed(3)}
+                          </Text>
+                        </View>
                       );
                     })}
                   </View>
@@ -536,7 +542,7 @@ class HomeContainer extends Component {
               }}>
               <Slider
                 minimumValue={1}
-                maximumValue={200}
+                maximumValue={10}
                 value={rangekm}
                 onValueChange={(value) => {
                   this.setState({rangekm: Math.round(value)});
