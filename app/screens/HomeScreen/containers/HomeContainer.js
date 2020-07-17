@@ -338,7 +338,10 @@ class HomeContainer extends Component {
                             - satuan : {val.satuan_number} {val.satuan.nama}
                           </Text>
                           <Text>
-                            - harga : Rp. {(val.harga / 1000).toFixed(3)}
+                            - harga : Rp.{' '}
+                            {val.harga.toString().length > 3
+                              ? (val.harga / 1000).toFixed(3)
+                              : val.harga}
                           </Text>
                         </View>
                       );

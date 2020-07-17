@@ -161,7 +161,7 @@ class OrderDetailContainer extends Component {
           ) : (
             <View style={{flexDirection: 'row'}}>
               <Text style={{flex: 1}}>Pembeli </Text>
-              <Text style={{}}>{user.name} </Text>
+              <Text style={{}}>{detailOrder.user.name} </Text>
             </View>
           )}
         </View>

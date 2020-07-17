@@ -24,6 +24,11 @@ class OrderListContainer extends Component {
     await actions.getMyOrders();
   }
 
+  async componentWillUnmount() {
+    const {actions} = this.props;
+    await actions.getEwarong();
+  }
+
   keyExtractor = (item, index) => index.toString();
 
   // onChangeQTY = (qty, item) => {
