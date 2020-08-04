@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -9,14 +9,14 @@ import {
   Linking,
   Platform,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {Button, Slider} from 'react-native-elements';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Button, Slider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MapView, {Marker} from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Modal from 'react-native-modal';
-import {getEwarong, setParams} from '../../../actions/ewarong';
+import { getEwarong, setParams } from '../../../actions/ewarong';
 import Dimension from '../../../constants/dimensions';
 import Colors from '../../../constants/colors';
 
@@ -29,12 +29,12 @@ class HomeContainer extends Component {
   };
 
   async componentDidMount() {
-    const {actions} = this.props;
+    const { actions } = this.props;
     await actions.getEwarong();
     Geolocation.getCurrentPosition(
       (position) => {
         const initialPosition = position;
-        this.setState({initialPosition});
+        this.setState({ initialPosition });
       },
       (error) =>
         Alert.alert('Lokasi tidak ditemukan', 'Tolong hidupkan lokasi anda'),
@@ -47,7 +47,7 @@ class HomeContainer extends Component {
     );
     this.watchID = Geolocation.watchPosition((position) => {
       const lastPosition = position;
-      this.setState({lastPosition});
+      this.setState({ lastPosition });
     });
   }
 
@@ -55,7 +55,7 @@ class HomeContainer extends Component {
     Geolocation.getCurrentPosition(
       (position) => {
         const initialPosition = position;
-        this.setState({initialPosition});
+        this.setState({ initialPosition });
       },
       (error) =>
         Alert.alert('Lokasi tidak ditemukan', 'Tolong hidupkan lokasi anda'),
@@ -68,7 +68,7 @@ class HomeContainer extends Component {
     );
     this.watchID = Geolocation.watchPosition((position) => {
       const lastPosition = position;
-      this.setState({lastPosition});
+      this.setState({ lastPosition });
     });
   }
 
@@ -88,8 +88,8 @@ class HomeContainer extends Component {
   }
 
   async setRadius() {
-    const {actions, filters} = this.props;
-    const {rangekm, initialPosition} = this.state;
+    const { actions, filters } = this.props;
+    const { rangekm, initialPosition } = this.state;
     if (initialPosition) {
       actions.setParams({
         ...filters,
@@ -104,7 +104,7 @@ class HomeContainer extends Component {
     }
   }
   removeRadius() {
-    const {actions, filters} = this.props;
+    const { actions, filters } = this.props;
     actions.setParams({
       ...filters,
       showRadius: false,
@@ -112,16 +112,16 @@ class HomeContainer extends Component {
   }
 
   navigateOrder = () => {
-    const {ewarongData} = this.state;
-    const {navigate} = this.props;
+    const { ewarongData } = this.state;
+    const { navigate } = this.props;
     this.setState({
       modalVisible: false,
     });
-    setTimeout(() => navigate('OrderScreen', {ewarong: ewarongData}), 200);
+    setTimeout(() => navigate('OrderScreen', { ewarong: ewarongData }), 200);
   };
 
   navigateLogin = () => {
-    const {navigate} = this.props;
+    const { navigate } = this.props;
     navigate('Login');
   };
 
@@ -183,7 +183,7 @@ class HomeContainer extends Component {
   }
 
   openMAPS = (label = 'Kios', lat, lang) => {
-    const scheme = Platform.select({ios: 'maps:0,0?q=', android: 'geo:0,0?q='});
+    const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
     const latLng = `${lat},${lang}`;
     const url = Platform.select({
       ios: `${scheme}${label}@${latLng}`,
@@ -194,10 +194,10 @@ class HomeContainer extends Component {
   };
 
   render() {
-    const {ewarong, filters} = this.props;
-    const {user} = this.props.session;
+    const { ewarong, filters } = this.props;
+    const { user } = this.props.session;
     const isLogin = user ? true : false;
-    const {initialPosition, modalVisible, ewarongData, rangekm} = this.state;
+    const { initialPosition, modalVisible, ewarongData, rangekm } = this.state;
     let nama_kios = null;
     let lokasi = null;
     let jam_buka = null;
@@ -223,8 +223,8 @@ class HomeContainer extends Component {
 
     return (
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{width: Dimension.DEVICE_WIDTH / 2 - 2}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ width: Dimension.DEVICE_WIDTH / 2 - 2 }}>
             <Button
               title="Cari Kios"
               onPress={() =>
@@ -235,25 +235,25 @@ class HomeContainer extends Component {
                   <Icon
                     name="search"
                     size={18}
-                    style={{marginRight: 5}}
+                    style={{ marginRight: 5 }}
                     color={Colors.TEXT_BLACK}
                   />
                 ) : (
-                  <View
-                    style={{
-                      marginRight: 5,
-                      borderRadius: 10,
-                      height: 20,
-                      width: 20,
-                      alignItems: 'center',
-                      backgroundColor: Colors.RED,
-                      fontSize: 12,
-                    }}>
-                    <Text style={{color: Colors.WHITE}}>
-                      {totalsearchfilter}
-                    </Text>
-                  </View>
-                )
+                    <View
+                      style={{
+                        marginRight: 5,
+                        borderRadius: 10,
+                        height: 20,
+                        width: 20,
+                        alignItems: 'center',
+                        backgroundColor: Colors.RED,
+                        fontSize: 12,
+                      }}>
+                      <Text style={{ color: Colors.WHITE }}>
+                        {totalsearchfilter}
+                      </Text>
+                    </View>
+                  )
               }
               titleStyle={{
                 color: Colors.TEXT_BLACK,
@@ -264,7 +264,7 @@ class HomeContainer extends Component {
               }}
             />
           </View>
-          <View style={{width: Dimension.DEVICE_WIDTH / 2 - 2}}>
+          <View style={{ width: Dimension.DEVICE_WIDTH / 2 - 2 }}>
             <Button
               title="Filter Kios"
               onPress={() => this.props.navigate('FilterScreen')}
@@ -273,23 +273,23 @@ class HomeContainer extends Component {
                   <Icon
                     name="filter"
                     size={18}
-                    style={{marginRight: 5}}
+                    style={{ marginRight: 5 }}
                     color={Colors.TEXT_BLACK}
                   />
                 ) : (
-                  <View
-                    style={{
-                      marginRight: 5,
-                      borderRadius: 10,
-                      height: 20,
-                      width: 20,
-                      alignItems: 'center',
-                      backgroundColor: Colors.RED,
-                      fontSize: 12,
-                    }}>
-                    <Text style={{color: Colors.WHITE}}>{totalFilter}</Text>
-                  </View>
-                )
+                    <View
+                      style={{
+                        marginRight: 5,
+                        borderRadius: 10,
+                        height: 20,
+                        width: 20,
+                        alignItems: 'center',
+                        backgroundColor: Colors.RED,
+                        fontSize: 12,
+                      }}>
+                      <Text style={{ color: Colors.WHITE }}>{totalFilter}</Text>
+                    </View>
+                  )
               }
               titleStyle={{
                 color: Colors.TEXT_BLACK,
@@ -315,8 +315,8 @@ class HomeContainer extends Component {
                   padding: 10,
                   backgroundColor: '#FFFFFF',
                 }}>
-                <ScrollView style={{flex: 1, marginBottom: 130}}>
-                  <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                <ScrollView style={{ flex: 1, marginBottom: 130 }}>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                     {nama_kios}
                   </Text>
                   <Text>
@@ -325,13 +325,13 @@ class HomeContainer extends Component {
                   <Text>
                     Jam buka: {jam_buka} Jam tutup: {jam_tutup}
                   </Text>
-                  <View style={{marginTop: 20}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                       Stock
                     </Text>
                     {stock.map((val, key) => {
                       return (
-                        <View key={key} style={{marginBottom: 20}}>
+                        <View key={key} style={{ marginBottom: 20 }}>
                           <Text>{val.item.nama}</Text>
                           <Text>- stock : {val.qty}</Text>
                           <Text>
@@ -347,8 +347,8 @@ class HomeContainer extends Component {
                       );
                     })}
                   </View>
-                  <View style={{marginTop: 20}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                  <View style={{ marginTop: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                       Riwayat Pemesanan
                     </Text>
                     {this.convertPemesanan(pemesanan)}
@@ -400,52 +400,52 @@ class HomeContainer extends Component {
                     />
                   </View>
                 ) : (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                    }}>
-                    <Button
-                      title="Lihat di MAP"
-                      onPress={() => this.openMAPS(nama_kios, lat, lng)}
-                      titleStyle={{
-                        color: Colors.TEXT_BLACK,
-                      }}
-                      buttonStyle={{
-                        marginBottom: 1,
-                        backgroundColor: Colors.LIGHT_GREY,
-                        width: Dimension.DEVICE_WIDTH - 38,
-                      }}
-                    />
-                    <Button
-                      title="Pesan"
-                      onPress={() => this.navigateLogin()}
-                      titleStyle={{
-                        color: Colors.TEXT_BLACK,
-                      }}
-                      buttonStyle={{
-                        marginBottom: 1,
-                        backgroundColor: Colors.LIGHT_GREY,
-                        width: Dimension.DEVICE_WIDTH - 38,
-                      }}
-                    />
-                    <Button
-                      title="Batal"
-                      onPress={() => {
-                        this.setState({
-                          modalVisible: false,
-                        });
-                      }}
-                      titleStyle={{
-                        color: Colors.TEXT_BLACK,
-                      }}
-                      buttonStyle={{
-                        backgroundColor: Colors.LIGHT_GREY,
-                        width: Dimension.DEVICE_WIDTH - 38,
-                      }}
-                    />
-                  </View>
-                )}
+                    <View
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                      }}>
+                      <Button
+                        title="Lihat di MAP"
+                        onPress={() => this.openMAPS(nama_kios, lat, lng)}
+                        titleStyle={{
+                          color: Colors.TEXT_BLACK,
+                        }}
+                        buttonStyle={{
+                          marginBottom: 1,
+                          backgroundColor: Colors.LIGHT_GREY,
+                          width: Dimension.DEVICE_WIDTH - 38,
+                        }}
+                      />
+                      <Button
+                        title="Pesan"
+                        onPress={() => this.navigateLogin()}
+                        titleStyle={{
+                          color: Colors.TEXT_BLACK,
+                        }}
+                        buttonStyle={{
+                          marginBottom: 1,
+                          backgroundColor: Colors.LIGHT_GREY,
+                          width: Dimension.DEVICE_WIDTH - 38,
+                        }}
+                      />
+                      <Button
+                        title="Batal"
+                        onPress={() => {
+                          this.setState({
+                            modalVisible: false,
+                          });
+                        }}
+                        titleStyle={{
+                          color: Colors.TEXT_BLACK,
+                        }}
+                        buttonStyle={{
+                          backgroundColor: Colors.LIGHT_GREY,
+                          width: Dimension.DEVICE_WIDTH - 38,
+                        }}
+                      />
+                    </View>
+                  )}
               </View>
             </Modal>
           </View>
@@ -495,28 +495,28 @@ class HomeContainer extends Component {
 
             {ewarong
               ? ewarong.map((val, key) => {
-                  return (
-                    <Marker
-                      key={key}
-                      onPress={() => {
-                        this.setState({
-                          modalVisible: true,
-                          ewarongData: val,
-                        });
-                      }}
-                      coordinate={{
-                        latitude: Number(val.latitude),
-                        longitude: Number(val.longitude),
-                      }}
-                      // pinColor={this.pinnedColor(val.pemesanan.length)}
-                    >
-                      <Image
-                        source={this.pinnedColor(val.pemesanan.length)}
-                        style={{height: 60, width: 60}}
-                      />
-                    </Marker>
-                  );
-                })
+                return (
+                  <Marker
+                    key={key}
+                    onPress={() => {
+                      this.setState({
+                        modalVisible: true,
+                        ewarongData: val,
+                      });
+                    }}
+                    coordinate={{
+                      latitude: Number(val.latitude),
+                      longitude: Number(val.longitude),
+                    }}
+                  // pinColor={this.pinnedColor(val.pemesanan.length)}
+                  >
+                    <Image
+                      source={this.pinnedColor(val.pemesanan.length)}
+                      style={{ height: 60, width: 60 }}
+                    />
+                  </Marker>
+                );
+              })
               : null}
           </MapView>
           <TouchableOpacity
@@ -534,7 +534,7 @@ class HomeContainer extends Component {
             <Icon
               name="search"
               size={20}
-              style={{paddingTop: 13, padding: 15}}
+              style={{ paddingTop: 13, padding: 15 }}
               color={Colors.WHITE}
             />
           </TouchableOpacity>
@@ -553,13 +553,13 @@ class HomeContainer extends Component {
               }}>
               <Slider
                 minimumValue={1}
-                maximumValue={200}
+                maximumValue={10}
                 value={rangekm}
                 onValueChange={(value) => {
-                  this.setState({rangekm: Math.round(value)});
+                  this.setState({ rangekm: Math.round(value) });
                 }}
               />
-              <Text style={{alignSelf: 'center', fontSize: 17}}>
+              <Text style={{ alignSelf: 'center', fontSize: 17 }}>
                 Jarak Jangkauan {rangekm} km
               </Text>
               <Button
