@@ -1,2 +1,2 @@
 # Ewarong
-Aplikasi pemesanan berbasis mobile dan map
+Food ordering applications using google map based smartphone
